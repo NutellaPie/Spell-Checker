@@ -4,49 +4,45 @@
 #include <string>
 #include "Trie.h"
 
+#pragma comment(linker, "/STACK:256000000")
+#pragma comment(linker, "/HEAP:256000000")
+
 using namespace std;
 
 int option;
 
 void Menu();
+void readDictionary();
+void option1();
+
+Trie dictionary;
 
 int main()
 {
-	Trie test;
+	readDictionary(); //Initialization
 
-	test.insert("the");
-	test.insert("a");
-	test.insert("there");
-	test.insert("answer");
-	test.insert("any");
-	test.insert("by");
-	test.insert("bye");
-	test.insert("their");
-	cout << test.search("the");
-	cout << test.search("these");
-	cout << test.search("their");
-	cout << test.search("thaw");
-	//while (true) {
+	while (true) { 	//Menu
 
-	//	Menu();
+		Menu();
 
-	//	switch (option) {
-	//	case 1:
-	//		break;
-	//	case 2:
-	//		break;
-	//	case 3:
-	//		break;
-	//	case 4:
-	//		break;
-	//	case 5:
-	//		break;
-	//	case 0:
-	//		cout << "Bye!" << endl;
-	//		system("PAUSE");
-	//		return 0;
-	//	}
-	//}
+		switch (option) {
+		case 1:
+			option1();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 0:
+			cout << "Bye!" << endl;
+			system("PAUSE");
+			return 0;
+		}
+	}
 }
 
 void Menu() {
@@ -63,4 +59,31 @@ void Menu() {
 	cin >> option;
 
 	cout << endl;
+}
+
+void readDictionary() {
+	ifstream readDictionary;
+	string tempWord;
+
+	readDictionary.open("../Resource Files/Text Files/RandomWords100.txt", ios::in);
+
+	while (readDictionary.good()) {
+		readDictionary >> tempWord;
+		dictionary.insert(tempWord);
+	}
+
+	readDictionary.close();
+}
+
+void option1() {
+	string searchstring;
+
+	cout << "Enter a keyword to search: ";
+	cin >> searchstring;
+
+	if (dictionary.search(searchstring))
+		cout << searchstring << " is present in the dictionary." << endl;
+
+	else
+		cout << searchstring << " is not present in the dictionary." << endl;
 }

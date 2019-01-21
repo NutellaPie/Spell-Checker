@@ -14,6 +14,7 @@ int option;
 void Menu();
 void readDictionary();
 void option1();
+void option2();
 
 Trie dictionary;
 
@@ -30,6 +31,7 @@ int main()
 			option1();
 			break;
 		case 2:
+			option2();
 			break;
 		case 3:
 			break;
@@ -86,4 +88,22 @@ void option1() {
 
 	else
 		cout << searchstring << " is not present in the dictionary." << endl;
+	}
+
+void option2() {
+	ifstream readTextFile;
+	int wrongcounter = 0;
+	string temp;
+	
+	readTextFile.open("../Resource Files/Text Files/Option2Tester.txt", ios::in);
+
+	while (readTextFile.good())
+	{
+		readTextFile >> temp;
+
+		if (!dictionary.search(temp))
+			cout << temp << " does not exist in the dictionary." << endl;
+	}
+
+	readTextFile.close();
 }

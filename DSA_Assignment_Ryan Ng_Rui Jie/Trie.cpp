@@ -17,6 +17,23 @@ Trie::Trie() {
 	root->endOfWord = false;
 }
 
+bool Trie::search(string target) {
+	TrieNode* temp = root;
+
+	for (int i = 0; i < target.length(); i++) {
+		char currentCharacter = tolower(target[i]);
+
+		if (temp->children[currentCharacter - 'a'] != NULL)
+			temp = temp->children[currentCharacter - 'a'];
+
+		else if ((temp->children[currentCharacter - 'a'] == NULL) && (temp->endOfWord) && (i == target.length() - 1))
+			return true;
+
+		else
+			return false;
+	}
+}
+
 //Insert a string into the trie
 void Trie::insert(string target) {
 	TrieNode* temp = root;
@@ -28,7 +45,7 @@ void Trie::insert(string target) {
 			TrieNode* newNode = new TrieNode();
 			temp->children[currentCharacter - 'a'] = newNode;
 		}
-		
+
 		temp = temp->children[currentCharacter - 'a'];			//Traverse to the next trie node
 	}
 

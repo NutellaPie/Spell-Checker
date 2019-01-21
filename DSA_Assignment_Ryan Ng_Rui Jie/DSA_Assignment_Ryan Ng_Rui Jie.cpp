@@ -15,6 +15,7 @@ void Menu();
 void readDictionary();
 void option1();
 void option2();
+//void option6();
 
 Trie dictionary;
 
@@ -24,6 +25,7 @@ int main()
 
 	while (true) { 	//Menu
 
+		string temp;
 		Menu();
 
 		switch (option) {
@@ -34,11 +36,21 @@ int main()
 			option2();
 			break;
 		case 3:
+			//Prompt user for new word to input
+			cout << "Enter the new word: ";
+			cin >> temp;
+
+			//Insert new word to trie dictionary
+			dictionary.insert(temp);
+			cout << "\"" << temp << "\"" << " has been successfully added" << endl;
 			break;
 		case 4:
 			break;
 		case 5:
 			break;
+		//case 6:
+		//	option6();
+		//	break;
 		case 0:
 			cout << "Bye!" << endl;
 			system("PAUSE");
@@ -54,6 +66,7 @@ void Menu() {
 	cout << "[3] Add a New Word to the Dictionary" << endl;
 	cout << "[4] Save the Dictionary (With New Words Added)" << endl;
 	cout << "[5] Display All Words in the Dictionary that Starts with a Certain Letter" << endl;
+	//cout << "[6] Remove a word from the dictionary" << endl;
 	cout << "[0] Exit " << endl;
 	cout << "----------------------------------------------" << endl;
 	cout << "Enter your option : ";
@@ -107,3 +120,18 @@ void option2() {
 
 	readTextFile.close();
 }
+
+//void option6() {
+//	string temp;
+//
+//	cout << "Enter a keyword to remove: ";
+//	cin >> temp;
+//
+//	if (dictionary.search(temp)) {
+//		dictionary.remove(temp);
+//		cout << "Successfull" << endl;
+//	}
+//	else {
+//		cout << "Does not exist" << endl;
+//	}
+//}

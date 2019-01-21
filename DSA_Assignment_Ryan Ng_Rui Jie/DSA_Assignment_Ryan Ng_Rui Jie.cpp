@@ -15,6 +15,7 @@ int main()
 	Trie test;
 
 	test.insert("car");
+	test.insert("cars");
 	cout << test.search("ca");
 	//while (true) {
 

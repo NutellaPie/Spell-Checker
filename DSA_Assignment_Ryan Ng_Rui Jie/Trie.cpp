@@ -25,13 +25,10 @@ bool Trie::search(string target) {
 
 		if (temp->children[currentCharacter - 'a'] != NULL)
 			temp = temp->children[currentCharacter - 'a'];
-
 		else
 			return false;
 	}
-
-	if (temp->endOfWord)
-		return true;
+	return temp->endOfWord;
 }
 
 //Insert a string into the trie

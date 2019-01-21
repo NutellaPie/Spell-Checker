@@ -26,12 +26,12 @@ bool Trie::search(string target) {
 		if (temp->children[currentCharacter - 'a'] != NULL)
 			temp = temp->children[currentCharacter - 'a'];
 
-		else if ((temp->children[currentCharacter - 'a'] == NULL) && (temp->endOfWord) && (i == target.length() - 1))
-			return true;
-
 		else
 			return false;
 	}
+
+	if (temp->endOfWord)
+		return true;
 }
 
 //Insert a string into the trie

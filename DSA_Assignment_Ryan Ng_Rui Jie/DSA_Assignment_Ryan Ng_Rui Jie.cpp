@@ -16,7 +16,7 @@ int main()
 
 	test.insert("car");
 	test.insert("cars");
-	cout << test.search("ca");
+	cout << test.search("carss");
 	//while (true) {
 
 	//	Menu();

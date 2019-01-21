@@ -1,14 +1,18 @@
 #pragma once
-#include <iostream>
 #include <string>
 using namespace std;
 
+const int numberOfChar = 26;
+
 class Trie
 {
+private:
 	struct TrieNode {
-		TrieNode* children[26];
+		TrieNode* children[numberOfChar];
 		bool endOfWord;
 	};
+
+	TrieNode* root;
 
 public:
 	//Constructor

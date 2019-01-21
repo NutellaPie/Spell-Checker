@@ -2,34 +2,41 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "Trie.h"
 
 using namespace std;
 
 int option;
 
+void Menu();
+
 int main()
 {
-	while (true) {
+	Trie test;
 
-		Menu();
+	test.insert("cawr");
+	cout << test.search("car");
+	//while (true) {
 
-		switch (option) {
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-		case 4:
-			break;
-		case 5:
-			break;
-		case 0:
-			cout << "Bye!" << endl;
-			system("PAUSE");
-			return 0;
-		}
-	}
+	//	Menu();
+
+	//	switch (option) {
+	//	case 1:
+	//		break;
+	//	case 2:
+	//		break;
+	//	case 3:
+	//		break;
+	//	case 4:
+	//		break;
+	//	case 5:
+	//		break;
+	//	case 0:
+	//		cout << "Bye!" << endl;
+	//		system("PAUSE");
+	//		return 0;
+	//	}
+	//}
 }
 
 void Menu() {

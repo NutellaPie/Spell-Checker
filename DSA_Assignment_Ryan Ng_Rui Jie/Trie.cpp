@@ -38,6 +38,9 @@ void Trie::insert(string target) {
 	for (int i = 0; i < target.length(); i++) {
 		char currentCharacter = tolower(target[i]);				//Convert char to lowercase
 
+		//if (currentCharacter < 97)
+		//	goto jmp;
+
 		if (temp->children[currentCharacter - 'a'] == NULL) {	//Create new trieNode if it does not exist in trie
 			TrieNode* newNode = new TrieNode();
 			temp->children[currentCharacter - 'a'] = newNode;

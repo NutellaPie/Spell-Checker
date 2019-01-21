@@ -53,7 +53,6 @@ int main()
 		//	break;
 		case 0:
 			cout << "Bye!" << endl;
-			system("PAUSE");
 			return 0;
 		}
 	}
@@ -101,7 +100,7 @@ void option1() {
 
 	else
 		cout << searchstring << " is not present in the dictionary." << endl;
-	}
+}
 
 void option2() {
 	ifstream readTextFile;
@@ -115,7 +114,7 @@ void option2() {
 		readTextFile >> temp;
 
 		if (!dictionary.search(temp))
-			cout << temp << " does not exist in the dictionary." << endl;
+			cout << "\"" << temp << "\" does not exist in the dictionary." << endl;
 	}
 
 	readTextFile.close();

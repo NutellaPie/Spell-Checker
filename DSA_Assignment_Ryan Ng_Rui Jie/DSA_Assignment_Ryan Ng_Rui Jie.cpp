@@ -14,9 +14,18 @@ int main()
 {
 	Trie test;
 
-	test.insert("car");
-	test.insert("cars");
-	cout << test.search("carss");
+	test.insert("the");
+	test.insert("a");
+	test.insert("there");
+	test.insert("answer");
+	test.insert("any");
+	test.insert("by");
+	test.insert("bye");
+	test.insert("their");
+	cout << test.search("the");
+	cout << test.search("these");
+	cout << test.search("their");
+	cout << test.search("thaw");
 	//while (true) {
 
 	//	Menu();

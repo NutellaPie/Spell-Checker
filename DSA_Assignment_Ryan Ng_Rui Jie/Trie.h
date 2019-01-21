@@ -4,26 +4,26 @@ using namespace std;
 
 const int numberOfChar = 26;
 
+struct TrieNode {
+	TrieNode* children[numberOfChar];
+	bool endOfWord;
+
+	//Trie node constructor
+	TrieNode() {
+
+		//Initialise array with NULLs
+		for (int i = 0; i < numberOfChar; i++) {
+			children[i] = NULL;
+		}
+
+		//Set end of word to false
+		endOfWord = false;
+	}
+};
+
 class Trie
 {
 private:
-	struct TrieNode {
-		TrieNode* children[numberOfChar];
-		bool endOfWord;
-
-		//Trie node constructor
-		TrieNode() {
-
-			//Initialise array with NULLs
-			for (int i = 0; i < numberOfChar; i++) {
-				children[i] = NULL;
-			}
-
-			//Set end of word to false
-			endOfWord = false;
-		}
-	};
-
 	TrieNode* root;
 
 public:
@@ -34,9 +34,12 @@ public:
 	void insert(string target);
 
 	//Remove a string from the trie
-	void remove(string target);
+	TrieNode* remove(TrieNode* root, string target, int level = 0);
 
 	//Search for a string in the trie
 	bool search(string target);
+
+	//Check if node has any children
+	bool isEmpty(TrieNode* root);
 };
 

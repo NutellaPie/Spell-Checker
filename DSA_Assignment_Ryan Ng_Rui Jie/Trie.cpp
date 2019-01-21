@@ -47,7 +47,10 @@ void Trie::insert(string target) {
 }
 
 //Remove a string from the trie  (Recursive delete nodes from bottom of trie)
-TrieNode* Trie::remove(TrieNode* root, string target, int level = 0) {
+TrieNode* Trie::remove(string target) {
+	return remove(root, target);
+}
+TrieNode* Trie::remove(TrieNode* root, string target, int level) {
 	//Check if trie is empty;
 	if (isEmpty(Trie::root)) {
 		return NULL;
@@ -70,7 +73,7 @@ TrieNode* Trie::remove(TrieNode* root, string target, int level = 0) {
 	}
 
 	//Recursive step (traverse to last character of string to be deleted)
-	root->children[target[level] - 'a'] = remove(root->children[target[level] - 'a'], target, level++);
+	root->children[target[level] - 'a'] = remove(root->children[target[level] - 'a'], target, level + 1);
 
 	//If character is not the prefix for another word && is not the end of a word
 	if (isEmpty(root) && root->endOfWord == false) {

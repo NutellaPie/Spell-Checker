@@ -34,6 +34,7 @@ public:
 	void insert(string target);
 
 	//Remove a string from the trie
+	TrieNode* remove(string target);
 	TrieNode* remove(TrieNode* root, string target, int level = 0);
 
 	//Search for a string in the trie

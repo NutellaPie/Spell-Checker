@@ -19,8 +19,9 @@ ofstream destinationfile; // Open destination file for Option 4
 //--------------------Initialization--------------------
 void Menu();
 void readDictionary();
-void option1();
-void option2();
+void SpellCheckWord();
+void SpellCheckFile();
+string SpellCheck(Trie dictionary, string keyword);
 //void option6(); // Optional delete function
 
 Trie dictionary;
@@ -35,10 +36,10 @@ int main()
 
 		switch (option) {
 		case 1:
-			option1();
+			SpellCheckWord();
 			break;
 		case 2:
-			option2();
+			SpellCheckFile();
 			break;
 		case 3:
 			//Prompt user for new word to input
@@ -78,9 +79,9 @@ int main()
 			cin >> temp;
 			dictionary.printAllWords(dictionary.getNode(temp), temp);
 			break;
-		//case 6:
-		//	option6();
-		//	break;
+			//case 6:
+			//	option6();
+			//	break;
 		case 100:
 
 			break;
@@ -115,7 +116,7 @@ void readDictionary() {
 
 	cout << "Input dictionary file to be read: ";
 	cin >> filename;
-	
+
 	filename = "../Resource Files/Dictionary Files/" + filename;
 	readDictionary.open(filename, ios::in);
 
@@ -127,11 +128,8 @@ void readDictionary() {
 	readDictionary.close();
 }
 
-void option1() {
+void SpellCheckWord() {
 	string searchstring;
-	string autocorrect;
-	string wrongwords[50];
-	int count = 0;
 
 	cout << "Enter a keyword to search: ";
 	cin >> searchstring;
@@ -139,40 +137,16 @@ void option1() {
 	if (dictionary.search(searchstring))
 		cout << searchstring << " is present in the dictionary." << endl;
 
-	else {
-		cout << searchstring << " is not present in the dictionary." << endl;
+	else
+		cout << "\"" << searchstring << "\" is not present in the dictionary. " << SpellCheck(dictionary, searchstring) << endl;
 
-		autocorrect = searchstring;
-
-		for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
-			autocorrect.erase(i, 1);
-			if (dictionary.search(autocorrect)) {
-				cout << "Insertion error. Did you mean: " << autocorrect << endl;
-			}
-
-			else
-				autocorrect = searchstring; //reset autocorrect to delete second char
-		}
-
-		for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
-			swap(autocorrect[i], autocorrect[i + 1]);
-			if (dictionary.search(autocorrect)) {
-				cout << "Transposition error. Did you mean: " << autocorrect << endl;
-			}
-
-			else
-				autocorrect = searchstring; //reset autocorrect to delete second word
-		}
-	}
 }
 
-void option2() {
+void SpellCheckFile() {
 	ifstream readTextFile;
-	string temp;
-	bool flag = false;
-	string autocorrect;
-	string wrongwords[50];
+	string input;
 	int count = 0;
+	bool flag = false;
 
 	cout << "Specify file to check against dictionary: ";
 	cin >> filename;
@@ -181,43 +155,17 @@ void option2() {
 
 	while (readTextFile.good()) {
 
-		readTextFile >> temp;
+		readTextFile >> input;
 
-		if (!dictionary.search(temp)) {
-
-			if (flag) {
-				cout << "List of words not in dictionary:" << endl;
+		if (!dictionary.search(input)) {
+			if (!flag) {
+				cout << endl << "Word(s) that are not found in the dictionary" << endl;
 				flag = true;
 			}
 
-			autocorrect = temp;
-
-			for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
-				autocorrect.erase(i, 1);
-				if (dictionary.search(autocorrect)) {
-					wrongwords[count] = "\"" + temp + "\" (Insertion error) " + "[Did you mean: " + autocorrect + "]";
-					count++;
-				}
-
-				else
-					autocorrect = temp; //reset autocorrect to delete second char
-			}
-
-			for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
-				swap(autocorrect[i], autocorrect[i + 1]);
-				if (dictionary.search(autocorrect)) {
-					wrongwords[count] = "\"" + temp + "\" (Transposition error) " + "[Did you mean: " + autocorrect + "]";
-					count++;
-				}
-
-				else
-					autocorrect = temp; //reset autocorrect to delete second word
-			}
+			cout << count + 1 << ". \"" << input << "\" is not present in the dictionary. " << SpellCheck(dictionary, input) << endl;
+			count++;
 		}
-	}
-
-	for (int i = 0; i < count; i++) {
-		cout << i + 1 << ". " << wrongwords[i] << endl;
 	}
 
 	if (count == 0)
@@ -226,17 +174,34 @@ void option2() {
 	readTextFile.close();
 }
 
-//void option6() {
-//	string temp;
-//
-//	cout << "Enter a keyword to remove: ";
-//	cin >> temp;
-//
-//	if (dictionary.search(temp)) {
-//		dictionary.remove(temp);
-//		cout << "Successfull" << endl;
-//	}
-//	else {
-//		cout << "Does not exist" << endl;
-//	}
-//}
+string SpellCheck(Trie dictionary, string keyword) {
+	string autocorrect;
+	bool foundsimilar = false;
+
+	autocorrect = keyword;
+
+	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+		autocorrect.erase(i, 1);
+		if (dictionary.search(autocorrect)) {
+			return "Did you mean \"" + autocorrect + "\" ? (Insertion error)";
+			foundsimilar = true;
+		}
+
+		else
+			autocorrect = keyword; //reset autocorrect to delete second char
+	}
+
+	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+		swap(autocorrect[i], autocorrect[i + 1]);
+		if (dictionary.search(autocorrect)) {
+			return "Did you mean \"" + autocorrect + "\" ? (Transposition error)";
+			foundsimilar = true;
+		}
+
+		else
+			autocorrect = keyword; //reset autocorrect to delete second word
+	}
+
+	if (!foundsimilar)
+		return "There are also no similar words found in the dictionary.";
+}

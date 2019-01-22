@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Trie.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -93,4 +94,36 @@ bool Trie::isEmpty(TrieNode* root) {
 		}
 	}
 	return true;
+}
+
+//Print all words in dictionary recursively
+//Helper functions to print words found
+void printWord(char* str, int n) {
+	for (int i = 0; i < n; i++) {
+		cout << str[i];
+	}
+	cout << endl;
+}
+
+void Trie::printAllWords() {
+	char wordArray[50];
+	return printAllWords(root, wordArray);
+}
+void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
+	//For empty trie
+	if (root == NULL) {
+		return;
+	}
+
+	//Base Case
+	if (root->endOfWord) {
+		printWord(wordArray, pos);
+	}
+	//Recursive step (Recur through every existing child until endOfWord flag is true)
+	for (int i = 0; i < numberOfChar; i++) {
+		if (root->children[i] != NULL) {
+			wordArray[pos] = 'a' + i;
+			printAllWords(root->children[i], wordArray, pos + 1);
+		}
+	}
 }

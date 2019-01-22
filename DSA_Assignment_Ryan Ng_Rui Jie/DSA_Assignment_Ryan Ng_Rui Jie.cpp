@@ -45,6 +45,7 @@ int main()
 			cout << "\"" << temp << "\"" << " has been successfully added" << endl;
 			break;
 		case 4:
+			dictionary.printAllWords();
 			break;
 		case 5:
 			break;
@@ -79,7 +80,7 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	readDictionary.open("../Resource Files/Text Files/RandomWords100.txt", ios::in);
+	readDictionary.open("../Resource Files/Text Files/RandomWords1000.txt", ios::in);
 
 	while (readDictionary.good()) {
 		readDictionary >> tempWord;

@@ -42,5 +42,9 @@ public:
 
 	//Check if node has any children
 	bool isEmpty(TrieNode* root);
+
+	//Print all words in dictionary recursively
+	void printAllWords();
+	void printAllWords(TrieNode* root, char* wordArray, int pos = 0);
 };
 

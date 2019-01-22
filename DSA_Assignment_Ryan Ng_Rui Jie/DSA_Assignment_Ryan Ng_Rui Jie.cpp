@@ -12,7 +12,6 @@ using namespace std;
 //--------------------Variables--------------------
 int option; // Option selected by user
 string temp; // Store the user input
-bool specialchars = false; // To check for special characters in user input
 string filename; // Filenames of various files used in this program
 ofstream destinationfile; // Open destination file for Option 4
 
@@ -21,6 +20,7 @@ void Menu();
 void readDictionary();
 void option1();
 void option2();
+bool isAlpha(string target);
 //void option6(); // Optional delete function
 
 Trie dictionary;
@@ -46,22 +46,18 @@ int main()
 				cout << "Enter the new word: ";
 				cin >> temp;
 
-				for (int i = 0; i < temp.length(); i++) {
-					if (!isalpha(temp[i])) {
-						specialchars = true;
-						break;
+				if (isAlpha(temp)) {
+					if (dictionary.search(temp)) {
+						cout << "\"" << temp << "\" already exists in the dictionary" << endl;
+					}
+					else {
+						//Insert new word to trie dictionary
+						dictionary.insert(temp);
+						cout << "\"" << temp << "\" has been successfully added" << endl;
 					}
 				}
-
-				if (!specialchars) {
-					//Insert new word to trie dictionary
-					dictionary.insert(temp);
-					cout << "\"" << temp << "\"" << " has been successfully added" << endl;
-				}
-
 				else {
 					cout << "Invalid character(s). Please try again" << endl;
-					specialchars = false;
 				}
 
 				break;
@@ -82,15 +78,12 @@ int main()
 				//case 6:
 				//	option6();
 				//	break;
-			case 100:
-
-				break;
 			case 0:
 				cout << "Bye!" << endl;
 				return 0;
 			}
 		}
-		else {
+		else {		//if input was not valid
 			cin.clear();											//Clear cin failbit
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');	//Flush buffer
 			cout << "Invalid input, please try again" << endl;
@@ -107,7 +100,6 @@ void Menu() {
 	cout << "[4] Save the dictionary (with new words added)" << endl;
 	cout << "[5] Display all words in the dictionary that starts with a certain letters" << endl;
 	//cout << "[6] Remove a word from the dictionary" << endl;
-	cout << "[100] Option for testing" << endl;
 	cout << "[0] Exit " << endl;
 	cout << "----------------------------------------------" << endl;
 	cout << "Enter your option : ";
@@ -120,18 +112,26 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	cout << "Input dictionary file to be read: ";
-	cin >> filename;
+	while (true) {
+		cout << "Input dictionary file to be read: ";
+		cin >> filename;
 
-	filename = "../Resource Files/Dictionary Files/" + filename;
-	readDictionary.open(filename, ios::in);
+		filename = "../Resource Files/Dictionary Files/" + filename;
+		readDictionary.open(filename, ios::in);
 
-	while (readDictionary.good()) {
-		readDictionary >> tempWord;
-		dictionary.insert(tempWord);
+		if (!readDictionary) {
+			cout << "Dictionary file does not exist." << endl << endl;
+		}
+		else {
+			while (readDictionary.good()) {
+				readDictionary >> tempWord;
+				dictionary.insert(tempWord);
+			}
+			break;
+		}
+
+		readDictionary.close();
 	}
-
-	readDictionary.close();
 }
 
 void option1() {
@@ -231,6 +231,15 @@ void option2() {
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();
+}
+
+bool isAlpha(string target) {
+	for (int i = 0; i < target.length(); i++) {
+		if (!isalpha(target[i])) {
+			return false;
+		}
+	}
+	return true;
 }
 
 //void option6() {

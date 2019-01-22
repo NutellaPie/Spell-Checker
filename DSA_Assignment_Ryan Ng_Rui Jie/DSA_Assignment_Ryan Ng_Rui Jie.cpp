@@ -27,6 +27,11 @@ int main()
 
 	while (true) { 	//Menu
 
+		string temp;
+
+		//Open destination file
+		ofstream destinationfile;
+
 		Menu();
 
 		switch (option) {
@@ -61,12 +66,21 @@ int main()
 
 			break;
 		case 4:
+			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);
+			dictionary.printAllWords(&destinationfile);
+			destinationfile.close();
 			break;
 		case 5:
+			cout << "Enter prefix: ";
+			cin >> temp;
+			dictionary.printAllWords(dictionary.getNode(temp), temp);
 			break;
-			//case 6:
-			//	option6();
-			//	break;
+		//case 6:
+		//	option6();
+		//	break;
+		case 100:
+
+			break;
 		case 0:
 			cout << "Bye!" << endl;
 			return 0;
@@ -82,6 +96,7 @@ void Menu() {
 	cout << "[4] Save the Dictionary (With New Words Added)" << endl;
 	cout << "[5] Display All Words in the Dictionary that Starts with a Certain Letter" << endl;
 	//cout << "[6] Remove a word from the dictionary" << endl;
+	cout << "[100] Option for testing" << endl;
 	cout << "[0] Exit " << endl;
 	cout << "----------------------------------------------" << endl;
 	cout << "Enter your option : ";
@@ -95,7 +110,7 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	readDictionary.open("../Resource Files/Text Files/RandomWords100.txt", ios::in);
+	readDictionary.open("../Resource Files/Dictionary Files/dictionary10KR.txt", ios::in);
 
 	while (readDictionary.good()) {
 		readDictionary >> tempWord;

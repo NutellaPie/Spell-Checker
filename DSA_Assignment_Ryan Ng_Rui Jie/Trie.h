@@ -27,8 +27,14 @@ private:
 	TrieNode* root;
 
 public:
+	int height;
+
 	//Constructor
 	Trie();
+
+	//Modify height of trie
+	void setHeight(int h);
+	int getHeight();
 
 	//Insert a string into the trie
 	void insert(string target);
@@ -42,5 +48,17 @@ public:
 
 	//Check if node has any children
 	bool isEmpty(TrieNode* root);
+
+	//Get memory address of node
+	TrieNode* getNode(string target);
+
+	//Default : Print all words in dictionary to console
+	void printAllWords();
+	void printAllWords(TrieNode* root, string prefix = "");
+	void printAllWords(TrieNode* root, char* wordArray, int pos = 0, string prefix = "");
+
+	//Default : Print all words in dictionary to new file
+	void printAllWords(ofstream* destinationfile);
+	void printAllWords(TrieNode* root, char* wordArray, ofstream* destinationfile, int pos = 0);
 };
 

@@ -108,6 +108,8 @@ void readDictionary() {
 void option1() {
 	string searchstring;
 	string autocorrect;
+	string wrongwords[50];
+	int count = 0;
 
 	cout << "Enter a keyword to search: ";
 	cin >> searchstring;
@@ -118,13 +120,22 @@ void option1() {
 	else {
 		cout << searchstring << " is not present in the dictionary." << endl;
 
-		autocorrect = searchstring; //Insertion error (extra word added)
+		autocorrect = searchstring;
 
-		for (int i = 0; i < autocorrect.length(); i++) {
+		for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
 			autocorrect.erase(i, 1);
 			if (dictionary.search(autocorrect)) {
-				cout << "Did you mean: " << autocorrect << endl;
-				break;
+				cout << "Insertion error. Did you mean: " << autocorrect << endl;
+			}
+
+			else
+				autocorrect = searchstring; //reset autocorrect to delete second char
+		}
+
+		for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+			swap(autocorrect[i], autocorrect[i + 1]);
+			if (dictionary.search(autocorrect)) {
+				cout << "Transposition error. Did you mean: " << autocorrect << endl;
 			}
 
 			else
@@ -135,11 +146,13 @@ void option1() {
 
 void option2() {
 	ifstream readTextFile;
-	int wrongcounter = 0;
-	bool flag = false;
 	string temp;
+	bool flag = false;
+	string autocorrect;
+	string wrongwords[50];
+	int count = 0;
 
-	readTextFile.open("../Resource Files/Text Files/Option2Tester.txt", ios::in);
+	readTextFile.open("../Resource Files/Text Files/Option2Errors.txt", ios::in);
 
 	while (readTextFile.good()) {
 
@@ -147,16 +160,42 @@ void option2() {
 
 		if (!dictionary.search(temp)) {
 
-			if (flag == false) {
-				cout << "Words not found in the dictionary: " << endl;
+			if (flag) {
+				cout << "List of words not in dictionary:" << endl;
 				flag = true;
 			}
-			wrongcounter++;
-			cout << wrongcounter << ". \"" << temp << "\"" << endl;
+
+			autocorrect = temp;
+
+			for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+				autocorrect.erase(i, 1);
+				if (dictionary.search(autocorrect)) {
+					wrongwords[count] = "\"" + temp + "\" (Insertion error) " + "[Did you mean: " + autocorrect + "]";
+					count++;
+				}
+
+				else
+					autocorrect = temp; //reset autocorrect to delete second char
+			}
+
+			for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+				swap(autocorrect[i], autocorrect[i + 1]);
+				if (dictionary.search(autocorrect)) {
+					wrongwords[count] = "\"" + temp + "\" (Transposition error) " + "[Did you mean: " + autocorrect + "]";
+					count++;
+				}
+
+				else
+					autocorrect = temp; //reset autocorrect to delete second word
+			}
 		}
 	}
 
-	if (wrongcounter == 0)
+	for (int i = 0; i < count; i++) {
+		cout << i + 1 << ". " << wrongwords[i] << endl;
+	}
+
+	if (count == 0)
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();

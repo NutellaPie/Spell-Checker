@@ -26,6 +26,10 @@ int main()
 	while (true) { 	//Menu
 
 		string temp;
+
+		//Open destination file
+		ofstream destinationfile;
+
 		Menu();
 
 		switch (option) {
@@ -45,7 +49,9 @@ int main()
 			cout << "\"" << temp << "\"" << " has been successfully added" << endl;
 			break;
 		case 4:
-			dictionary.printAllWords();
+			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);
+			dictionary.printAllWords(&destinationfile);
+			destinationfile.close();
 			break;
 		case 5:
 			break;
@@ -53,7 +59,7 @@ int main()
 		//	option6();
 		//	break;
 		case 100:
-			cout << dictionary.getHeight() << endl;
+
 			break;
 		case 0:
 			cout << "Bye!" << endl;
@@ -84,7 +90,7 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	readDictionary.open("../Resource Files/Text Files/RandomWords1000.txt", ios::in);
+	readDictionary.open("../Resource Files/Dictionary Files/dictionary10KR.txt", ios::in);
 
 	while (readDictionary.good()) {
 		readDictionary >> tempWord;

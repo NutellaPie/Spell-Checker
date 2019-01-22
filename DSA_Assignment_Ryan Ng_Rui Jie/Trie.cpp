@@ -2,6 +2,7 @@
 #include "Trie.h"
 #include <string>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -12,6 +13,12 @@ void printWord(char* str, int n) {
 		cout << str[i];
 	}
 	cout << endl;
+}
+void printWord(char* str, int n, ofstream* destinationfile) {
+	for (int i = 0; i < n; i++) {
+		*destinationfile << str[i];
+	}
+	*destinationfile << endl;
 }
 
 //----------------------------------------------------
@@ -72,7 +79,7 @@ void Trie::insert(string target) {
 	temp->endOfWord = true;										//Set endOfWord bool to true to indicate that the character completes the word
 }
 
-//Remove a string from the trie  (Recursive delete nodes from bottom of trie)
+//Remove a string from the trie  (Recursively delete nodes from bottom of trie)
 TrieNode* Trie::remove(string target) {
 	return remove(root, target);
 }
@@ -110,7 +117,6 @@ TrieNode* Trie::remove(TrieNode* root, string target, int level) {
 	return root;
 }
 
-
 //Check if node has any children
 bool Trie::isEmpty(TrieNode* root) {
 	for (int i = 0; i < numberOfChar; i++) {
@@ -121,16 +127,15 @@ bool Trie::isEmpty(TrieNode* root) {
 	return true;
 }
 
-//Print all words in dictionary recursively
-
-//Print all words to console ------------------------------------------------------------
-
-//PrintAllWords
+//Print all words in dictionary to console
 void Trie::printAllWords() {
-	char wordArray[50];
+	//Dynamically initialise array with size of max length of string in dictionary
+	char* wordArray = NULL;
+	int maxWordLength = getHeight();
+	wordArray = new char[maxWordLength];
+
 	return printAllWords(root, wordArray);
 }
-//void Trie::printAllWords
 void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
 	//For empty trie
 	if (root == NULL) {
@@ -149,4 +154,31 @@ void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
 		}
 	}
 }
-//---------------------------------------------------------------------------------------
+
+//Print all words in dictionary to new file
+void Trie::printAllWords(ofstream* destinationfile) {
+	//Dynamically initialise array with size of max length of string in dictionary
+	char* wordArray = NULL;
+	int maxWordLength = getHeight();
+	wordArray = new char[maxWordLength];
+
+	return printAllWords(root, wordArray, destinationfile, 0);
+}
+void Trie::printAllWords(TrieNode* root, char* wordArray, ofstream* destinationfile, int pos) {
+	//For empty trie
+	if (root == NULL) {
+		return;
+	}
+
+	//Base Case
+	if (root->endOfWord) {
+		printWord(wordArray, pos, destinationfile);
+	}
+	//Recursive step (Recur through every existing child until endOfWord flag is true)
+	for (int i = 0; i < numberOfChar; i++) {
+		if (root->children[i] != NULL) {
+			wordArray[pos] = 'a' + i;
+			printAllWords(root->children[i], wordArray, destinationfile, pos + 1);
+		}
+	}
+}

@@ -25,9 +25,10 @@ class Trie
 {
 private:
 	TrieNode* root;
-	int height;
 
 public:
+	int height;
+
 	//Constructor
 	Trie();
 
@@ -49,8 +50,16 @@ public:
 	bool isEmpty(TrieNode* root);
 
 	//Print all words in dictionary recursively
+
+	//Default : Print all words in dictionary to console
 	void printAllWords();
+	void printAllWords();
+	//Actual implementation of printAllWords function
 	void printAllWords(TrieNode* root, char* wordArray, int pos = 0);
 
+	//Default : Print all words in dictionary to new file
+	void printAllWords(ofstream* destinationfile);
+	//Actual implementation of printAllWords function with file
+	void printAllWords(TrieNode* root, char* wordArray, ofstream* destinationfile, int pos = 0);
 };
 

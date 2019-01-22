@@ -9,15 +9,19 @@
 
 using namespace std;
 
-int option;
-string temp;
-bool specialchars = false;
+//--------------------Variables--------------------
+int option; // Option selected by user
+string temp; // Store the user input
+bool specialchars = false; // To check for special characters in user input
+string filename; // Filenames of various files used in this program
+ofstream destinationfile; // Open destination file for Option 4
 
+//--------------------Initialization--------------------
 void Menu();
 void readDictionary();
 void option1();
 void option2();
-//void option6();
+//void option6(); // Optional delete function
 
 Trie dictionary;
 
@@ -26,11 +30,6 @@ int main()
 	readDictionary(); //Initialization
 
 	while (true) { 	//Menu
-
-		string temp;
-
-		//Open destination file
-		ofstream destinationfile;
 
 		Menu();
 
@@ -66,10 +65,14 @@ int main()
 
 			break;
 		case 4:
-			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);		//Open destination file for editing
-			dictionary.printAllWords(&destinationfile);											//Print all words in dictionary to destination file
-			destinationfile.close();															//Close destination file after completed.
-			break;	
+			cout << "Specify file to save dictionary to: ";
+			cin >> filename;
+			filename = "../Resource Files/Text Files/" + filename;
+
+			destinationfile.open(filename, ios::out);
+			dictionary.printAllWords(&destinationfile);
+			destinationfile.close();
+			break;
 		case 5:
 			cout << "Enter prefix: ";
 			cin >> temp;
@@ -110,7 +113,11 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	readDictionary.open("../Resource Files/Dictionary Files/dictionary10KR.txt", ios::in);
+	cout << "Input dictionary file to be read: ";
+	cin >> filename;
+	
+	filename = "../Resource Files/Dictionary Files/" + filename;
+	readDictionary.open(filename, ios::in);
 
 	while (readDictionary.good()) {
 		readDictionary >> tempWord;
@@ -123,6 +130,8 @@ void readDictionary() {
 void option1() {
 	string searchstring;
 	string autocorrect;
+	string wrongwords[50];
+	int count = 0;
 
 	cout << "Enter a keyword to search: ";
 	cin >> searchstring;
@@ -133,13 +142,22 @@ void option1() {
 	else {
 		cout << searchstring << " is not present in the dictionary." << endl;
 
-		autocorrect = searchstring; //Insertion error (extra word added)
+		autocorrect = searchstring;
 
-		for (int i = 0; i < autocorrect.length(); i++) {
+		for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
 			autocorrect.erase(i, 1);
 			if (dictionary.search(autocorrect)) {
-				cout << "Did you mean: " << autocorrect << endl;
-				break;
+				cout << "Insertion error. Did you mean: " << autocorrect << endl;
+			}
+
+			else
+				autocorrect = searchstring; //reset autocorrect to delete second char
+		}
+
+		for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+			swap(autocorrect[i], autocorrect[i + 1]);
+			if (dictionary.search(autocorrect)) {
+				cout << "Transposition error. Did you mean: " << autocorrect << endl;
 			}
 
 			else
@@ -150,11 +168,16 @@ void option1() {
 
 void option2() {
 	ifstream readTextFile;
-	int wrongcounter = 0;
-	bool flag = false;
 	string temp;
+	bool flag = false;
+	string autocorrect;
+	string wrongwords[50];
+	int count = 0;
 
-	readTextFile.open("../Resource Files/Text Files/Option2Tester.txt", ios::in);
+	cout << "Specify file to check against dictionary: ";
+	cin >> filename;
+	filename = "../Resource Files/Text Files/" + filename;
+	readTextFile.open(filename, ios::in); //Open file for reading
 
 	while (readTextFile.good()) {
 
@@ -162,16 +185,42 @@ void option2() {
 
 		if (!dictionary.search(temp)) {
 
-			if (flag == false) {
-				cout << "Words not found in the dictionary: " << endl;
+			if (flag) {
+				cout << "List of words not in dictionary:" << endl;
 				flag = true;
 			}
-			wrongcounter++;
-			cout << wrongcounter << ". \"" << temp << "\"" << endl;
+
+			autocorrect = temp;
+
+			for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+				autocorrect.erase(i, 1);
+				if (dictionary.search(autocorrect)) {
+					wrongwords[count] = "\"" + temp + "\" (Insertion error) " + "[Did you mean: " + autocorrect + "]";
+					count++;
+				}
+
+				else
+					autocorrect = temp; //reset autocorrect to delete second char
+			}
+
+			for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+				swap(autocorrect[i], autocorrect[i + 1]);
+				if (dictionary.search(autocorrect)) {
+					wrongwords[count] = "\"" + temp + "\" (Transposition error) " + "[Did you mean: " + autocorrect + "]";
+					count++;
+				}
+
+				else
+					autocorrect = temp; //reset autocorrect to delete second word
+			}
 		}
 	}
 
-	if (wrongcounter == 0)
+	for (int i = 0; i < count; i++) {
+		cout << i + 1 << ". " << wrongwords[i] << endl;
+	}
+
+	if (count == 0)
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();

@@ -52,6 +52,9 @@ int main()
 		//case 6:
 		//	option6();
 		//	break;
+		case 100:
+			cout << dictionary.getHeight() << endl;
+			break;
 		case 0:
 			cout << "Bye!" << endl;
 			return 0;
@@ -67,6 +70,7 @@ void Menu() {
 	cout << "[4] Save the Dictionary (With New Words Added)" << endl;
 	cout << "[5] Display All Words in the Dictionary that Starts with a Certain Letter" << endl;
 	//cout << "[6] Remove a word from the dictionary" << endl;
+	cout << "[100] Option for testing" << endl;
 	cout << "[0] Exit " << endl;
 	cout << "----------------------------------------------" << endl;
 	cout << "Enter your option : ";

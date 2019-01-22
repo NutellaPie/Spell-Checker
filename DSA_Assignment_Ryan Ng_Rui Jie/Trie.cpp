@@ -5,10 +5,30 @@
 
 using namespace std;
 
+//Helper functions ------------------------------------
+//Helper function to print words found
+void printWord(char* str, int n) {
+	for (int i = 0; i < n; i++) {
+		cout << str[i];
+	}
+	cout << endl;
+}
+
+//----------------------------------------------------
+
 //Constructor
 Trie::Trie() {
 	//Create root trieNode
 	root = new TrieNode();
+	height = 0;
+}
+
+//Modify height of trie
+void Trie::setHeight(int h) {
+	height = h;
+}
+int Trie::getHeight() {
+	return height;
 }
 
 //Search for a string in the trie
@@ -30,8 +50,13 @@ bool Trie::search(string target) {
 void Trie::insert(string target) {
 	TrieNode* temp = root;
 
+	//Set height of trie to longest word
+	if (target.length() > getHeight()) {
+		setHeight(target.length());
+	}
+
 	for (int i = 0; i < target.length(); i++) {
-		char currentCharacter = tolower(target[i]);				//Convert char to lowercase
+	char currentCharacter = tolower(target[i]);				//Convert char to lowercase
 
 		//if (currentCharacter < 97)
 		//	goto jmp;
@@ -97,18 +122,15 @@ bool Trie::isEmpty(TrieNode* root) {
 }
 
 //Print all words in dictionary recursively
-//Helper functions to print words found
-void printWord(char* str, int n) {
-	for (int i = 0; i < n; i++) {
-		cout << str[i];
-	}
-	cout << endl;
-}
 
+//Print all words to console ------------------------------------------------------------
+
+//PrintAllWords
 void Trie::printAllWords() {
 	char wordArray[50];
 	return printAllWords(root, wordArray);
 }
+//void Trie::printAllWords
 void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
 	//For empty trie
 	if (root == NULL) {
@@ -127,3 +149,4 @@ void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
 		}
 	}
 }
+//---------------------------------------------------------------------------------------

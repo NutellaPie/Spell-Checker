@@ -25,10 +25,15 @@ class Trie
 {
 private:
 	TrieNode* root;
+	int height;
 
 public:
 	//Constructor
 	Trie();
+
+	//Modify height of trie
+	void setHeight(int h);
+	int getHeight();
 
 	//Insert a string into the trie
 	void insert(string target);
@@ -46,5 +51,6 @@ public:
 	//Print all words in dictionary recursively
 	void printAllWords();
 	void printAllWords(TrieNode* root, char* wordArray, int pos = 0);
+
 };
 

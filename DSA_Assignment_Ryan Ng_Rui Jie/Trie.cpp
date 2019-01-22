@@ -6,7 +6,8 @@
 
 using namespace std;
 
-//Helper function to print words found
+//Helper function to each print words found 
+//Parameters include array of chars that make up the word, length of word, prefix (if any), destination file to print to (if any)
 void printWord(char* str, int n, string prefix) {
 	cout << prefix;
 	for (int i = 0; i < n; i++) {
@@ -53,25 +54,27 @@ bool Trie::search(string target) {
 
 //Insert a string into the trie
 void Trie::insert(string target) {
-	TrieNode* temp = root;
+	if (!search(target)) {											//Check if string to insert already exist in dicitonary
+		TrieNode* temp = root;
 
-	//Set height of trie to longest word
-	if (target.length() > getHeight()) {
-		setHeight(target.length());
-	}
-
-	for (int i = 0; i < target.length(); i++) {
-	char currentCharacter = tolower(target[i]);				//Convert char to lowercase
-
-		if (temp->children[currentCharacter - 'a'] == NULL) {	//Create new trieNode if it does not exist in trie
-			TrieNode* newNode = new TrieNode();
-			temp->children[currentCharacter - 'a'] = newNode;
+		//Set height of trie to longest word
+		if (target.length() > getHeight()) {
+			setHeight(target.length());
 		}
 
-		temp = temp->children[currentCharacter - 'a'];			//Traverse to the next trie node
-	}
+		for (int i = 0; i < target.length(); i++) {
+			char currentCharacter = tolower(target[i]);				//Convert char to lowercase
 
-	temp->endOfWord = true;										//Set endOfWord bool to true to indicate that the character completes the word
+			if (temp->children[currentCharacter - 'a'] == NULL) {	//Create new trieNode if it does not exist in trie
+				TrieNode* newNode = new TrieNode();
+				temp->children[currentCharacter - 'a'] = newNode;
+			}
+
+			temp = temp->children[currentCharacter - 'a'];			//Traverse to the next trie node
+		}
+
+		temp->endOfWord = true;										//Set endOfWord bool to true to indicate that the character completes the word
+	}
 }
 
 //Remove a string from the trie  (Recursively delete nodes from bottom of trie)

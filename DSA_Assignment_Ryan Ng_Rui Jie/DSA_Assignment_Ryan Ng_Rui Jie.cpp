@@ -12,7 +12,6 @@ using namespace std;
 //--------------------Variables--------------------
 int option; // Option selected by user
 string temp; // Store the user input
-bool specialchars = false; // To check for special characters in user input
 string filename; // Filenames of various files used in this program
 ofstream destinationfile; // Open destination file for Option 4
 
@@ -22,6 +21,7 @@ void readDictionary();
 void SpellCheckWord();
 void SpellCheckFile();
 string SpellCheck(Trie dictionary, string keyword);
+bool isAlpha(string target);
 //void option6(); // Optional delete function
 
 Trie dictionary;
@@ -46,67 +46,71 @@ int main()
 			cout << "Enter the new word: ";
 			cin >> temp;
 
-			for (int i = 0; i < temp.length(); i++) {
-				if (!isalpha(temp[i])) {
-					specialchars = true;
-					break;
+				if (isAlpha(temp)) {
+					if (dictionary.search(temp)) {
+						cout << "\"" << temp << "\" already exists in the dictionary" << endl;
+					}
+					else {
+						//Insert new word to trie dictionary
+						dictionary.insert(temp);
+						cout << "\"" << temp << "\" has been successfully added" << endl;
+					}
 				}
+				else {
+					cout << "Invalid character(s). Please try again" << endl;
+				}
+
+				break;
+			case 4:
+				cout << "Specify file to save dictionary to: ";
+				cin >> filename;
+				filename = "../Resource Files/Text Files/" + filename;
+
+				destinationfile.open(filename, ios::out);
+				dictionary.printAllWords(&destinationfile);
+				destinationfile.close();
+				break;
+			case 5:
+				cout << "Enter prefix: ";
+				cin >> temp;
+
+				if (isAlpha(temp)) {
+					dictionary.printAllWords(dictionary.getNode(temp), temp);
+				}
+				else {
+					cout << "\"" << temp << "\" is not a valid prefix. Please try again (Only alphabets accepted)." << endl;
+				}
+				break;
+				//case 6:
+				//	option6();
+				//	break;
+			case 0:
+				cout << "Bye!" << endl;
+				return 0;
 			}
-
-			if (!specialchars) {
-				//Insert new word to trie dictionary
-				dictionary.insert(temp);
-				cout << "\"" << temp << "\"" << " has been successfully added" << endl;
-			}
-
-			else {
-				cout << "Invalid character(s). Please try again" << endl;
-				specialchars = false;
-			}
-
-			break;
-		case 4:
-			cout << "Specify file to save dictionary to: ";
-			cin >> filename;
-			filename = "../Resource Files/Text Files/" + filename;
-
-			destinationfile.open(filename, ios::out);
-			dictionary.printAllWords(&destinationfile);
-			destinationfile.close();
-			break;
-		case 5:
-			cout << "Enter prefix: ";
-			cin >> temp;
-			dictionary.printAllWords(dictionary.getNode(temp), temp);
-			break;
-			//case 6:
-			//	option6();
-			//	break;
-		case 100:
-
-			break;
-		case 0:
-			cout << "Bye!" << endl;
-			return 0;
+		}
+		else {		//if input was not valid
+			cin.clear();											//Clear cin failbit
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');	//Flush buffer
+			cout << "Invalid input, please try again" << endl;
 		}
 	}
 }
 
+
 void Menu() {
 	cout << endl << "---------------- Spell Checker -------------------" << endl;
-	cout << "[1] Spell Check a Word" << endl;
-	cout << "[2] Spell Check a File" << endl;
-	cout << "[3] Add a New Word to the Dictionary" << endl;
-	cout << "[4] Save the Dictionary (With New Words Added)" << endl;
-	cout << "[5] Display All Words in the Dictionary that Starts with a Certain Letter" << endl;
+	cout << "[1] Spell check a word" << endl;
+	cout << "[2] Spell check a file" << endl;
+	cout << "[3] Add a new word to the dictionary" << endl;
+	cout << "[4] Save the dictionary (with new words added)" << endl;
+	cout << "[5] Display all words in the dictionary that starts with a certain letters" << endl;
 	//cout << "[6] Remove a word from the dictionary" << endl;
-	cout << "[100] Option for testing" << endl;
 	cout << "[0] Exit " << endl;
 	cout << "----------------------------------------------" << endl;
 	cout << "Enter your option : ";
 
 	cin >> option;
-
 	cout << endl;
 }
 
@@ -114,18 +118,26 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	cout << "Input dictionary file to be read: ";
-	cin >> filename;
+	while (true) {
+		cout << "Input dictionary file to be read: ";
+		cin >> filename;
 
-	filename = "../Resource Files/Dictionary Files/" + filename;
-	readDictionary.open(filename, ios::in);
+		filename = "../Resource Files/Dictionary Files/" + filename;
+		readDictionary.open(filename, ios::in);
 
-	while (readDictionary.good()) {
-		readDictionary >> tempWord;
-		dictionary.insert(tempWord);
+		if (!readDictionary) {
+			cout << "Dictionary file does not exist." << endl << endl;
+		}
+		else {
+			while (readDictionary.good()) {
+				readDictionary >> tempWord;
+				dictionary.insert(tempWord);
+			}
+			break;
+		}
+
+		readDictionary.close();
 	}
-
-	readDictionary.close();
 }
 
 void SpellCheckWord() {

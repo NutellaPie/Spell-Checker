@@ -25,10 +25,9 @@ class Trie
 {
 private:
 	TrieNode* root;
-
-public:
 	int height;
 
+public:
 	//Constructor
 	Trie();
 

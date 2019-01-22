@@ -66,10 +66,10 @@ int main()
 
 			break;
 		case 4:
-			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);
-			dictionary.printAllWords(&destinationfile);
-			destinationfile.close();
-			break;
+			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);		//Open destination file for editing
+			dictionary.printAllWords(&destinationfile);											//Print all words in dictionary to destination file
+			destinationfile.close();															//Close destination file after completed.
+			break;	
 		case 5:
 			cout << "Enter prefix: ";
 			cin >> temp;
@@ -90,11 +90,11 @@ int main()
 
 void Menu() {
 	cout << endl << "---------------- Spell Checker -------------------" << endl;
-	cout << "[1] Spell Check a Word" << endl;
-	cout << "[2] Spell Check a File" << endl;
-	cout << "[3] Add a New Word to the Dictionary" << endl;
-	cout << "[4] Save the Dictionary (With New Words Added)" << endl;
-	cout << "[5] Display All Words in the Dictionary that Starts with a Certain Letter" << endl;
+	cout << "[1] Spell check a word" << endl;
+	cout << "[2] Spell check a file" << endl;
+	cout << "[3] Add a new word to the dictionary" << endl;
+	cout << "[4] Save the dictionary (with new words added)" << endl;
+	cout << "[5] Display all words in the dictionary that starts with a certain letters" << endl;
 	//cout << "[6] Remove a word from the dictionary" << endl;
 	cout << "[100] Option for testing" << endl;
 	cout << "[0] Exit " << endl;

@@ -764,6 +764,7 @@ bang
 bangbus
 bangkok
 bangladesh
+banish
 bank
 banking
 bankruptcy

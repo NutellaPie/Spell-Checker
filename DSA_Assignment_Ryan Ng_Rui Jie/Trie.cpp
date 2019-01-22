@@ -6,7 +6,8 @@
 
 using namespace std;
 
-//Helper function to print words found
+//Helper function to each print words found 
+//Parameters include array of chars that make up the word, length of word, prefix (if any), destination file to print to (if any)
 void printWord(char* str, int n, string prefix) {
 	cout << prefix;
 	for (int i = 0; i < n; i++) {

@@ -10,6 +10,8 @@
 using namespace std;
 
 int option;
+string temp;
+bool specialchars = false;
 
 void Menu();
 void readDictionary();
@@ -44,9 +46,24 @@ int main()
 			cout << "Enter the new word: ";
 			cin >> temp;
 
-			//Insert new word to trie dictionary
-			dictionary.insert(temp);
-			cout << "\"" << temp << "\"" << " has been successfully added" << endl;
+			for (int i = 0; i < temp.length(); i++) {
+				if (!isalpha(temp[i])) {
+					specialchars = true;
+					break;
+				}
+			}
+
+			if (!specialchars) {
+				//Insert new word to trie dictionary
+				dictionary.insert(temp);
+				cout << "\"" << temp << "\"" << " has been successfully added" << endl;
+			}
+
+			else {
+				cout << "Invalid character(s). Please try again" << endl;
+				specialchars = false;
+			}
+
 			break;
 		case 4:
 			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);
@@ -116,17 +133,28 @@ void option1() {
 void option2() {
 	ifstream readTextFile;
 	int wrongcounter = 0;
+	bool flag = false;
 	string temp;
-	
+
 	readTextFile.open("../Resource Files/Text Files/Option2Tester.txt", ios::in);
 
-	while (readTextFile.good())
-	{
+	while (readTextFile.good()) {
+
 		readTextFile >> temp;
 
-		if (!dictionary.search(temp))
-			cout << "\"" << temp << "\" does not exist in the dictionary." << endl;
+		if (!dictionary.search(temp)) {
+
+			if (flag == false) {
+				cout << "Words not found in the dictionary: " << endl;
+				flag = true;
+			}
+			wrongcounter++;
+			cout << wrongcounter << ". \"" << temp << "\"" << endl;
+		}
 	}
+
+	if (wrongcounter == 0)
+		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();
 }

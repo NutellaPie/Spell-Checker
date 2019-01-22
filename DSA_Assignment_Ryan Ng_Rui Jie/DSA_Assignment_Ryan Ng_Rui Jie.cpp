@@ -33,63 +33,71 @@ int main()
 
 		Menu();
 
-		switch (option) {
-		case 1:
-			option1();
-			break;
-		case 2:
-			option2();
-			break;
-		case 3:
-			//Prompt user for new word to input
-			cout << "Enter the new word: ";
-			cin >> temp;
+		if (cin.good() && option >= 0 && option <= 5) {		//Validate input to only accept integers 0 to 5
+			switch (option) {
+			case 1:
+				option1();
+				break;
+			case 2:
+				option2();
+				break;
+			case 3:
+				//Prompt user for new word to input
+				cout << "Enter the new word: ";
+				cin >> temp;
 
-			for (int i = 0; i < temp.length(); i++) {
-				if (!isalpha(temp[i])) {
-					specialchars = true;
-					break;
+				for (int i = 0; i < temp.length(); i++) {
+					if (!isalpha(temp[i])) {
+						specialchars = true;
+						break;
+					}
 				}
+
+				if (!specialchars) {
+					//Insert new word to trie dictionary
+					dictionary.insert(temp);
+					cout << "\"" << temp << "\"" << " has been successfully added" << endl;
+				}
+
+				else {
+					cout << "Invalid character(s). Please try again" << endl;
+					specialchars = false;
+				}
+
+				break;
+			case 4:
+				cout << "Specify file to save dictionary to: ";
+				cin >> filename;
+				filename = "../Resource Files/Text Files/" + filename;
+
+				destinationfile.open(filename, ios::out);
+				dictionary.printAllWords(&destinationfile);
+				destinationfile.close();
+				break;
+			case 5:
+				cout << "Enter prefix: ";
+				cin >> temp;
+				dictionary.printAllWords(dictionary.getNode(temp), temp);
+				break;
+				//case 6:
+				//	option6();
+				//	break;
+			case 100:
+
+				break;
+			case 0:
+				cout << "Bye!" << endl;
+				return 0;
 			}
-
-			if (!specialchars) {
-				//Insert new word to trie dictionary
-				dictionary.insert(temp);
-				cout << "\"" << temp << "\"" << " has been successfully added" << endl;
-			}
-
-			else {
-				cout << "Invalid character(s). Please try again" << endl;
-				specialchars = false;
-			}
-
-			break;
-		case 4:
-			cout << "Specify file to save dictionary to: ";
-			cin >> filename;
-			filename = "../Resource Files/Text Files/" + filename;
-
-			destinationfile.open(filename, ios::out);
-			dictionary.printAllWords(&destinationfile);
-			destinationfile.close();
-			break;
-		case 5:
-			cout << "Enter prefix: ";
-			cin >> temp;
-			dictionary.printAllWords(dictionary.getNode(temp), temp);
-			break;
-		//case 6:
-		//	option6();
-		//	break;
-		case 100:
-
-			break;
-		case 0:
-			cout << "Bye!" << endl;
-			return 0;
+		}
+		else {
+			cin.clear();											//Clear cin failbit
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');	//Flush buffer
+			cout << "Invalid input, please try again" << endl;
 		}
 	}
 }
+
 
 void Menu() {
 	cout << endl << "---------------- Spell Checker -------------------" << endl;
@@ -105,7 +113,6 @@ void Menu() {
 	cout << "Enter your option : ";
 
 	cin >> option;
-
 	cout << endl;
 }
 
@@ -115,7 +122,7 @@ void readDictionary() {
 
 	cout << "Input dictionary file to be read: ";
 	cin >> filename;
-	
+
 	filename = "../Resource Files/Dictionary Files/" + filename;
 	readDictionary.open(filename, ios::in);
 
@@ -151,7 +158,7 @@ void option1() {
 			}
 
 			else
-				autocorrect = searchstring; //reset autocorrect to delete second char
+				autocorrect = searchstring; //reset autocorrect
 		}
 
 		for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
@@ -161,7 +168,7 @@ void option1() {
 			}
 
 			else
-				autocorrect = searchstring; //reset autocorrect to delete second word
+				autocorrect = searchstring; //reset autocorrect
 		}
 	}
 }
@@ -200,7 +207,7 @@ void option2() {
 				}
 
 				else
-					autocorrect = temp; //reset autocorrect to delete second char
+					autocorrect = temp; //reset autocorrect
 			}
 
 			for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
@@ -211,7 +218,7 @@ void option2() {
 				}
 
 				else
-					autocorrect = temp; //reset autocorrect to delete second word
+					autocorrect = temp; //reset autocorrect
 			}
 		}
 	}

@@ -107,6 +107,7 @@ void readDictionary() {
 
 void option1() {
 	string searchstring;
+	string autocorrect;
 
 	cout << "Enter a keyword to search: ";
 	cin >> searchstring;
@@ -114,8 +115,22 @@ void option1() {
 	if (dictionary.search(searchstring))
 		cout << searchstring << " is present in the dictionary." << endl;
 
-	else
+	else {
 		cout << searchstring << " is not present in the dictionary." << endl;
+
+		autocorrect = searchstring; //Insertion error (extra word added)
+
+		for (int i = 0; i < autocorrect.length(); i++) {
+			autocorrect.erase(i, 1);
+			if (dictionary.search(autocorrect)) {
+				cout << "Did you mean: " << autocorrect << endl;
+				break;
+			}
+
+			else
+				autocorrect = searchstring; //reset autocorrect to delete second word
+		}
+	}
 }
 
 void option2() {

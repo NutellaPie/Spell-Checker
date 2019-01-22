@@ -9,15 +9,19 @@
 
 using namespace std;
 
-int option;
-string temp;
-bool specialchars = false;
+//--------------------Variables--------------------
+int option; // Option selected by user
+string temp; // Store the user input
+bool specialchars = false; // To check for special characters in user input
+string filename; // Filenames of various files used in this program
+ofstream destinationfile; // Open destination file for Option 4
 
+//--------------------Initialization--------------------
 void Menu();
 void readDictionary();
 void option1();
 void option2();
-//void option6();
+//void option6(); // Optional delete function
 
 Trie dictionary;
 
@@ -26,11 +30,6 @@ int main()
 	readDictionary(); //Initialization
 
 	while (true) { 	//Menu
-
-		string temp;
-
-		//Open destination file
-		ofstream destinationfile;
 
 		Menu();
 
@@ -66,7 +65,11 @@ int main()
 
 			break;
 		case 4:
-			destinationfile.open("../Resource Files/Text Files/testoutput.txt", ios::out);
+			cout << "Specify file to save dictionary to: ";
+			cin >> filename;
+			filename = "../Resource Files/Text Files/" + filename;
+
+			destinationfile.open(filename, ios::out);
 			dictionary.printAllWords(&destinationfile);
 			destinationfile.close();
 			break;
@@ -110,7 +113,11 @@ void readDictionary() {
 	ifstream readDictionary;
 	string tempWord;
 
-	readDictionary.open("../Resource Files/Dictionary Files/dictionary10KR.txt", ios::in);
+	cout << "Input dictionary file to be read: ";
+	cin >> filename;
+	
+	filename = "../Resource Files/Dictionary Files/" + filename;
+	readDictionary.open(filename, ios::in);
 
 	while (readDictionary.good()) {
 		readDictionary >> tempWord;
@@ -167,7 +174,10 @@ void option2() {
 	string wrongwords[50];
 	int count = 0;
 
-	readTextFile.open("../Resource Files/Text Files/Option2Errors.txt", ios::in);
+	cout << "Specify file to check against dictionary: ";
+	cin >> filename;
+	filename = "../Resource Files/Text Files/" + filename;
+	readTextFile.open(filename, ios::in); //Open file for reading
 
 	while (readTextFile.good()) {
 

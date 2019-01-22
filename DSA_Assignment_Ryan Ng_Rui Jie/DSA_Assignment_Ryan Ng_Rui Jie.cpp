@@ -73,7 +73,13 @@ int main()
 			case 5:
 				cout << "Enter prefix: ";
 				cin >> temp;
-				dictionary.printAllWords(dictionary.getNode(temp), temp);
+
+				if (isAlpha(temp)) {
+					dictionary.printAllWords(dictionary.getNode(temp), temp);
+				}
+				else {
+					cout << "\"" << temp << "\" is not a valid prefix. Please try again (Only alphabets accepted)." << endl;
+				}
 				break;
 				//case 6:
 				//	option6();

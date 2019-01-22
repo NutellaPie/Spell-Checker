@@ -49,17 +49,16 @@ public:
 	//Check if node has any children
 	bool isEmpty(TrieNode* root);
 
-	//Print all words in dictionary recursively
+	//Get memory address of node
+	TrieNode* getNode(string target);
 
 	//Default : Print all words in dictionary to console
 	void printAllWords();
-	void printAllWords();
-	//Actual implementation of printAllWords function
-	void printAllWords(TrieNode* root, char* wordArray, int pos = 0);
+	void printAllWords(TrieNode* root, string prefix = "");
+	void printAllWords(TrieNode* root, char* wordArray, int pos = 0, string prefix = "");
 
 	//Default : Print all words in dictionary to new file
 	void printAllWords(ofstream* destinationfile);
-	//Actual implementation of printAllWords function with file
 	void printAllWords(TrieNode* root, char* wordArray, ofstream* destinationfile, int pos = 0);
 };
 

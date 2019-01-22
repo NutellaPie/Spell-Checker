@@ -71,6 +71,9 @@ int main()
 			destinationfile.close();
 			break;
 		case 5:
+			cout << "Enter prefix: ";
+			cin >> temp;
+			dictionary.printAllWords(dictionary.getNode(temp), temp);
 			break;
 		//case 6:
 		//	option6();

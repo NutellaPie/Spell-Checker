@@ -6,9 +6,9 @@
 
 using namespace std;
 
-//Helper functions ------------------------------------
 //Helper function to print words found
-void printWord(char* str, int n) {
+void printWord(char* str, int n, string prefix) {
+	cout << prefix;
 	for (int i = 0; i < n; i++) {
 		cout << str[i];
 	}
@@ -20,8 +20,6 @@ void printWord(char* str, int n, ofstream* destinationfile) {
 	}
 	*destinationfile << endl;
 }
-
-//----------------------------------------------------
 
 //Constructor
 Trie::Trie() {
@@ -124,6 +122,23 @@ bool Trie::isEmpty(TrieNode* root) {
 	return true;
 }
 
+//Get pointer to target node
+TrieNode* Trie::getNode(string target) {
+	TrieNode* temp = root;
+
+	for (int i = 0; i < target.length(); i++) {
+		char currentCharacter = tolower(target[i]);
+
+		if (temp->children[currentCharacter - 'a'] != NULL) {
+			temp = temp->children[currentCharacter - 'a'];
+		}
+		else {
+			return NULL;
+		}
+	}
+	return temp;
+}
+
 //Print all words in dictionary to console
 void Trie::printAllWords() {
 	//Dynamically initialise array with size of max length of string in dictionary
@@ -133,7 +148,15 @@ void Trie::printAllWords() {
 
 	return printAllWords(root, wordArray);
 }
-void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
+void Trie::printAllWords(TrieNode* root, string prefix) {
+	//Dynamically initialise array with size of max length of string in dictionary
+	char* wordArray = NULL;
+	int maxWordLength = getHeight();
+	wordArray = new char[maxWordLength];
+
+	return printAllWords(root, wordArray, 0, prefix);
+}
+void Trie::printAllWords(TrieNode* root, char* wordArray, int pos, string prefix) {
 	//For empty trie
 	if (root == NULL) {
 		return;
@@ -141,13 +164,13 @@ void Trie::printAllWords(TrieNode* root, char* wordArray, int pos) {
 
 	//Base Case
 	if (root->endOfWord) {
-		printWord(wordArray, pos);
+		printWord(wordArray, pos, prefix);
 	}
 	//Recursive step (Recur through every existing child until endOfWord flag is true)
 	for (int i = 0; i < numberOfChar; i++) {
 		if (root->children[i] != NULL) {
 			wordArray[pos] = 'a' + i;
-			printAllWords(root->children[i], wordArray, pos + 1);
+			printAllWords(root->children[i], wordArray, pos + 1, prefix);
 		}
 	}
 }

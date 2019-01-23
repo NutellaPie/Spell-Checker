@@ -12,7 +12,7 @@ string temp; // Store the user input
 string filename; // Filenames of various files used in this program
 ofstream destinationfile; // Open destination file for Option 4
 
-//--------------------Initialization--------------------
+//--------------------Function Initialization--------------------
 void Menu();
 void readDictionary();
 void SpellCheckWord();
@@ -23,6 +23,7 @@ void DisplayAllWordsPrefix();
 //void RemoveWord();
 string SpellCheck(Trie dictionary, string keyword);
 bool isAlpha(string target);
+bool isInt(string target);
 
 Trie dictionary;
 
@@ -34,7 +35,8 @@ int main()
 
 		Menu();
 
-		if (cin.good() && option >= 0 && option <= 5) {		//Validate input to only accept integers 0 to 5
+		if (isInt(temp)) {			//check if user input is an integer
+			option = stoi(temp);	//convert user input to integer
 			switch (option) {
 			case 1:
 				SpellCheckWord();
@@ -51,17 +53,18 @@ int main()
 			case 5:
 				DisplayAllWordsPrefix();
 				break;
-			//case 6:					//Optional - Remove word from dictionary
-			//	RemoveWord();
-			//	break;
+				//case 6:					//Optional - Remove word from dictionary
+				//	RemoveWord();
+				//	break;
 			case 0:
 				cout << "Bye!" << endl;
 				return 0;
+			default:	//if input was not one of the options
+				cout << "Invalid input, please try again" << endl;
+				break;
 			}
 		}
-		else {		//if input was not valid
-			cin.clear();											//Clear cin failbit
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');	//Flush buffer
+		else {		//if input was not an int
 			cout << "Invalid input, please try again" << endl;
 		}
 	}
@@ -80,7 +83,9 @@ void Menu() {
 	cout << "--------------------------------------------------" << endl;
 	cout << "Enter your option : ";
 
-	cin >> option;
+	getline(cin, temp);
+
+	//cin >> option;
 	cout << endl;
 }
 
@@ -90,7 +95,8 @@ void readDictionary() {
 
 	while (true) {
 		cout << "Input dictionary file to be read: ";
-		cin >> filename;
+		getline(cin, filename);
+		//cin >> filename;
 
 		filename = "../Resource Files/Dictionary Files/" + filename;
 		readDictionary.open(filename, ios::in);
@@ -116,7 +122,8 @@ void SpellCheckWord() {
 	string searchstring;
 
 	cout << "Enter a keyword to search: ";
-	cin >> searchstring;
+	getline(cin, searchstring);
+	//cin >> searchstring;
 
 	if (dictionary.search(searchstring))
 		cout << searchstring << " is present in the dictionary." << endl;
@@ -134,7 +141,8 @@ void SpellCheckFile() {
 	bool flag = false;
 
 	cout << "Specify file to check against dictionary: ";
-	cin >> filename;
+	getline(cin, filename);
+	//cin >> filename;
 	filename = "../Resource Files/Text Files/" + filename;
 	readTextFile.open(filename, ios::in); //Open file for reading
 
@@ -157,13 +165,14 @@ void SpellCheckFile() {
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();
-}		
+}
 
 //Add a new word to the dictionary - Option 3
 void AddNewWord() {
 	//Prompt user for new word to input
 	cout << "Enter the new word: ";
-	cin >> temp;
+	getline(cin, temp);
+	//cin >> temp;
 
 	if (isAlpha(temp)) {
 		if (dictionary.search(temp)) {
@@ -184,7 +193,8 @@ void AddNewWord() {
 //Save the dictionary (with new words added) - Option 4
 void SaveDictionary() {
 	cout << "Specify file to save dictionary to: ";
-	cin >> filename;
+	getline(cin, filename);
+	//cin >> filename;
 	filename = "../Resource Files/Text Files/" + filename;
 
 	destinationfile.open(filename, ios::out);
@@ -195,7 +205,8 @@ void SaveDictionary() {
 //Display all words that start with certain letters - Option 5
 void DisplayAllWordsPrefix() {
 	cout << "Enter prefix: ";
-	cin >> temp;
+	getline(cin, temp);
+	//cin >> temp;
 
 	if (isAlpha(temp)) {
 		dictionary.printAllWords(dictionary.getNode(temp), temp);
@@ -210,6 +221,7 @@ void DisplayAllWordsPrefix() {
 //	string temp;
 //
 //	cout << "Enter a keyword to remove: ";
+//	getline(cin, temp);
 //	cin >> temp;
 //
 //	if (dictionary.search(temp)) {
@@ -255,8 +267,21 @@ string SpellCheck(Trie dictionary, string keyword) {
 }
 
 bool isAlpha(string target) {
+	if (target == "")
+		return false;
 	for (int i = 0; i < target.length(); i++) {
 		if (!isalpha(target[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isInt(string target) {
+	if (target == "")
+		return false;
+	for (int i = 0; i < target.length(); i++) {
+		if (!isdigit(target[i])) {
 			return false;
 		}
 	}

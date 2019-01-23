@@ -55,9 +55,9 @@ int main()
 			case 5:
 				DisplayAllWordsPrefix();
 				break;
-			//case 6:					//Optional - Remove word from dictionary
-			//	RemoveWord();
-			//	break;
+				//case 6:					//Optional - Remove word from dictionary
+				//	RemoveWord();
+				//	break;
 			case 0:
 				cout << "Bye!" << endl;
 				return 0;
@@ -125,8 +125,13 @@ void SpellCheckWord() {
 	if (dictionary.search(searchstring))
 		cout << searchstring << " is present in the dictionary." << endl;
 
-	else
-		cout << "\"" << searchstring << "\" is not present in the dictionary. " << SpellCheck(dictionary, searchstring) << endl;
+	else {
+		cout << endl << "Word not found in the dictionary" << endl << string(70, '-') << endl;
+		cout << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
+		cout << string(70, '-') << endl;
+		cout << searchstring << string(dictionary.getHeight() - searchstring.length(), ' ') << "  |  " << SpellCheck(dictionary, searchstring) << endl;
+		cout << string(70, '-') << endl;
+	}
 
 }
 
@@ -148,11 +153,17 @@ void SpellCheckFile() {
 
 		if (!dictionary.search(input)) {
 			if (!flag) {
-				cout << endl << "Word(s) that are not found in the dictionary" << endl;
+				cout << endl << "Word(s) that are not found in the dictionary" << endl << string(79, '-') << endl;
+				cout << " No." << "  |  " << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
+				cout << string(79, '-') << endl;
 				flag = true;
 			}
 
-			cout << count + 1 << ". \"" << input << "\" is not present in the dictionary. " << SpellCheck(dictionary, input) << endl;
+
+			//cout << "|" <<count + 1 << ".\t|\t\"" << input << "\t\"\t" << SpellCheck(dictionary, input) << endl;
+
+			//cout << count+1 << ". |" << string(15 - input.length(), ' ') << input << string(30 - input.length(), ' ') << "| " << SpellCheck(dictionary, input) << endl;
+			cout << string(4 - to_string(count + 1).length(), ' ') << count+1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  " << SpellCheck(dictionary, input) << endl;
 			count++;
 		}
 	}
@@ -161,7 +172,7 @@ void SpellCheckFile() {
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();
-}		
+}
 
 //Add a new word to the dictionary - Option 3
 void AddNewWord() {
@@ -235,8 +246,8 @@ string SpellCheck(Trie dictionary, string keyword) {
 	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
 		autocorrect.erase(i, 1);
 		if (dictionary.search(autocorrect)) {
-			return "Did you mean \"" + autocorrect + "\" ? (Insertion error)";
 			foundsimilar = true;
+			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Insertion      |";
 		}
 
 		else
@@ -244,10 +255,14 @@ string SpellCheck(Trie dictionary, string keyword) {
 	}
 
 	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
-		swap(autocorrect[i], autocorrect[i + 1]);
+
+		string prefix = autocorrect.substr(0, i);
+		string postfix = autocorrect.substr(i + 2);
+		autocorrect = prefix + autocorrect[i + 1] + autocorrect[i] + postfix;
+
 		if (dictionary.search(autocorrect)) {
-			return "Did you mean \"" + autocorrect + "\" ? (Transposition error)";
 			foundsimilar = true;
+			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Transposition  |";
 		}
 
 		else
@@ -255,7 +270,7 @@ string SpellCheck(Trie dictionary, string keyword) {
 	}
 
 	if (!foundsimilar)
-		return "There are also no similar words found in the dictionary.";
+		return "-" + string(dictionary.getHeight() - 1, ' ') + "  |  -              |";
 }
 
 bool isAlpha(string target) {
@@ -266,3 +281,75 @@ bool isAlpha(string target) {
 	}
 	return true;
 }
+
+
+
+//////////Backup
+//string SpellCheck(Trie dictionary, string keyword) {
+//	string autocorrect;
+//	bool foundsimilar = false;
+//
+//	autocorrect = keyword;
+//
+//	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+//		autocorrect.erase(i, 1);
+//		if (dictionary.search(autocorrect)) {
+//			return "Did you mean \"" + autocorrect + "\" ? (Insertion error)";
+//			foundsimilar = true;
+//		}
+//
+//		else
+//			autocorrect = keyword; //reset autocorrect to delete second char
+//	}
+//
+//	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+//
+//		string prefix = autocorrect.substr(0, i);
+//		string postfix = autocorrect.substr(i + 2);
+//		autocorrect = prefix + autocorrect[i + 1] + autocorrect[i] + postfix;
+//
+//		if (dictionary.search(autocorrect)) {
+//			return "Did you mean \"" + autocorrect + "\" ? (Transposition error)";
+//			foundsimilar = true;
+//		}
+//
+//		else
+//			autocorrect = keyword; //reset autocorrect to delete second word
+//	}
+//
+//	if (!foundsimilar)
+//		return "There are also no similar words found in the dictionary.";
+//}
+
+//Spell check a file - Option 2
+//void SpellCheckFile() {
+//	ifstream readTextFile;
+//	string input;
+//	int count = 0;
+//	bool flag = false;
+//
+//	cout << "Specify file to check against dictionary: ";
+//	cin >> filename;
+//	filename = "../Resource Files/Text Files/" + filename;
+//	readTextFile.open(filename, ios::in); //Open file for reading
+//
+//	while (readTextFile.good()) {
+//
+//		readTextFile >> input;
+//
+//		if (!dictionary.search(input)) {
+//			if (!flag) {
+//				cout << endl << "Word(s) that are not found in the dictionary" << endl;
+//				flag = true;
+//			}
+//
+//			cout << count + 1 << ". \"" << input << "\" is not present in the dictionary. " << SpellCheck(dictionary, input) << endl;
+//			count++;
+//		}
+//	}
+//
+//	if (count == 0)
+//		cout << "All words in this text file are found in the dictionary." << endl;
+//
+//	readTextFile.close();
+//}

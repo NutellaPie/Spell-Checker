@@ -4,9 +4,6 @@
 #include <string>
 #include "Trie.h"
 
-#pragma comment(linker, "/STACK:256000000")
-#pragma comment(linker, "/HEAP:256000000")
-
 using namespace std;
 
 //--------------------Variables--------------------

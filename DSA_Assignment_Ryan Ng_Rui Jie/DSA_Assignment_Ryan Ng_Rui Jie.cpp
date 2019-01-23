@@ -125,7 +125,7 @@ void readDictionary() {
 
 //Spell check a word - Option 1
 //Search dictionary for word and prints to console if word exists in the dictionary.
-//Also suggests possible mistyped words based on different errors (Insertion, transposition)
+//Also suggests possible mistyped words based on different errors (Insertion, transposition, deletion)
 void SpellCheckWord() {
 	string searchstring;			//To store word to be checked against the dictionary
 	int n;							//For counting number of autocorrected words to suggest
@@ -312,7 +312,7 @@ void RemoveWord() {
 
 //------------------------------------------------- Additional Functions ----------------------------------------------------------
 
-//Spellcheck function that suggests words based on error types detected in user input (Insertion, transposition)
+//Spellcheck function that suggests words based on error types detected in user input (Insertion, transposition, deletion)
 //Returns number of autocorrected words, list of autocorrected words and list of respective error types
 //Parses dictionary trie to search, keyword to search, list to store autocorrected words, list to store error types
 int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* errors) {
@@ -373,7 +373,9 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 	}
 
 	//---------------------------------- Deletion error check -------------------------
-	for (int i = 0; i < autocorrect.length(); i++) {
+	
+	//Iterate through every alphabet in the keyword
+	for (int i = 0; i <= autocorrect.length(); i++) {
 
 		//Inserting character to string
 		string prefix = autocorrect.substr(0, i);										//Set prefix to characters before index to insert character

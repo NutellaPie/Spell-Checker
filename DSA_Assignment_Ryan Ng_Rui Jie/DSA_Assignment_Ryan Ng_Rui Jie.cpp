@@ -20,6 +20,10 @@ void Menu();
 void readDictionary();
 void SpellCheckWord();
 void SpellCheckFile();
+void AddNewWord();
+void SaveDictionary();
+void DisplayAllWordsPrefix();
+//void RemoveWord();
 string SpellCheck(Trie dictionary, string keyword);
 bool isAlpha(string target);
 //void option6(); // Optional delete function
@@ -34,56 +38,26 @@ int main()
 
 		Menu();
 
-		switch (option) {
-		case 1:
-			SpellCheckWord();
-			break;
-		case 2:
-			SpellCheckFile();
-			break;
-		case 3:
-			//Prompt user for new word to input
-			cout << "Enter the new word: ";
-			cin >> temp;
-
-				if (isAlpha(temp)) {
-					if (dictionary.search(temp)) {
-						cout << "\"" << temp << "\" already exists in the dictionary" << endl;
-					}
-					else {
-						//Insert new word to trie dictionary
-						dictionary.insert(temp);
-						cout << "\"" << temp << "\" has been successfully added" << endl;
-					}
-				}
-				else {
-					cout << "Invalid character(s). Please try again" << endl;
-				}
-
+		if (cin.good() && option >= 0 && option <= 5) {		//Validate input to only accept integers 0 to 5
+			switch (option) {
+			case 1:
+				SpellCheckWord();
+				break;
+			case 2:
+				SpellCheckFile();
+				break;
+			case 3:
+				AddNewWord();
 				break;
 			case 4:
-				cout << "Specify file to save dictionary to: ";
-				cin >> filename;
-				filename = "../Resource Files/Text Files/" + filename;
-
-				destinationfile.open(filename, ios::out);
-				dictionary.printAllWords(&destinationfile);
-				destinationfile.close();
+				SaveDictionary();
 				break;
 			case 5:
-				cout << "Enter prefix: ";
-				cin >> temp;
-
-				if (isAlpha(temp)) {
-					dictionary.printAllWords(dictionary.getNode(temp), temp);
-				}
-				else {
-					cout << "\"" << temp << "\" is not a valid prefix. Please try again (Only alphabets accepted)." << endl;
-				}
+				DisplayAllWordsPrefix();
 				break;
-				//case 6:
-				//	option6();
-				//	break;
+			//case 6:					//Optional - Remove word from dictionary
+			//	RemoveWord();
+			//	break;
 			case 0:
 				cout << "Bye!" << endl;
 				return 0;
@@ -104,10 +78,10 @@ void Menu() {
 	cout << "[2] Spell check a file" << endl;
 	cout << "[3] Add a new word to the dictionary" << endl;
 	cout << "[4] Save the dictionary (with new words added)" << endl;
-	cout << "[5] Display all words in the dictionary that starts with a certain letters" << endl;
-	//cout << "[6] Remove a word from the dictionary" << endl;
+	cout << "[5] Display all words in the dictionary that starts with certain letters" << endl;
+	//cout << "[6] Remove a word from the dictionary" << endl;			//optional option
 	cout << "[0] Exit " << endl;
-	cout << "----------------------------------------------" << endl;
+	cout << "--------------------------------------------------" << endl;
 	cout << "Enter your option : ";
 
 	cin >> option;
@@ -140,6 +114,8 @@ void readDictionary() {
 	}
 }
 
+//-------------------------Fuctions for options----------------------------
+//Spell check a file - Option 1
 void SpellCheckWord() {
 	string searchstring;
 
@@ -154,6 +130,7 @@ void SpellCheckWord() {
 
 }
 
+//Spell check a file - Option 2
 void SpellCheckFile() {
 	ifstream readTextFile;
 	string input;
@@ -184,8 +161,71 @@ void SpellCheckFile() {
 		cout << "All words in this text file are found in the dictionary." << endl;
 
 	readTextFile.close();
+}		
+
+//Add a new word to the dictionary - Option 3
+void AddNewWord() {
+	//Prompt user for new word to input
+	cout << "Enter the new word: ";
+	cin >> temp;
+
+	if (isAlpha(temp)) {
+		if (dictionary.search(temp)) {
+			cout << "\"" << temp << "\" already exists in the dictionary" << endl;
+		}
+		else {
+			//Insert new word to trie dictionary
+			dictionary.insert(temp);
+			cout << "\"" << temp << "\" has been successfully added" << endl;
+		}
+	}
+	else {
+		cout << "Invalid character(s). Please try again" << endl;
+	}
+
 }
 
+//Save the dictionary (with new words added) - Option 4
+void SaveDictionary() {
+	cout << "Specify file to save dictionary to: ";
+	cin >> filename;
+	filename = "../Resource Files/Text Files/" + filename;
+
+	destinationfile.open(filename, ios::out);
+	dictionary.printAllWords(&destinationfile);
+	destinationfile.close();
+}
+
+//Display all words that start with certain letters - Option 5
+void DisplayAllWordsPrefix() {
+	cout << "Enter prefix: ";
+	cin >> temp;
+
+	if (isAlpha(temp)) {
+		dictionary.printAllWords(dictionary.getNode(temp), temp);
+	}
+	else {
+		cout << "\"" << temp << "\" is not a valid prefix. Please try again (Only alphabets accepted)." << endl;
+	}
+}
+
+//Remove word from dictionary - Optional option
+//void RemoveWord() {
+//	string temp;
+//
+//	cout << "Enter a keyword to remove: ";
+//	cin >> temp;
+//
+//	if (dictionary.search(temp)) {
+//		dictionary.remove(temp);
+//		cout << "Successfull" << endl;
+//	}
+//	else {
+//		cout << "Does not exist" << endl;
+//	}
+//}
+
+//-------------------------------Additional Functions-----------------------
 string SpellCheck(Trie dictionary, string keyword) {
 	string autocorrect;
 	bool foundsimilar = false;
@@ -216,4 +256,13 @@ string SpellCheck(Trie dictionary, string keyword) {
 
 	if (!foundsimilar)
 		return "There are also no similar words found in the dictionary.";
+}
+
+bool isAlpha(string target) {
+	for (int i = 0; i < target.length(); i++) {
+		if (!isalpha(target[i])) {
+			return false;
+		}
+	}
+	return true;
 }

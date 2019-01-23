@@ -412,14 +412,14 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 	//---------------------------------- Substitution error check -------------------------
 
 	for (int i = 0; i < autocorrect.length(); i++) {
-		string prefix = autocorrect.substr(0, i);									//Set prefix to characters before index to insert character
-		string postfix = autocorrect.substr(i + 1);
+		string prefix = autocorrect.substr(0, i);									//Set prefix to characters before index to replace character
+		string postfix = autocorrect.substr(i + 1);									//Set postfix to characters after index to replace character
 		
 		for (int x = 0; x < numberOfChar; x++) {
 			if (dictionary.getNode(prefix) != NULL) {									//Check if there is a branch to prefix in dictionary
-				if (dictionary.getNode(prefix)->children[x] != NULL) {					//Check if prefix node's child array contains alphabet to be inserted
-					char replacementChar = 'a' + x;										//Assign alphabet to be inserted
-					autocorrect = prefix + replacementChar + postfix;					//Insert alphabet into string to be evaluated
+				if (dictionary.getNode(prefix)->children[x] != NULL) {					//Check if prefix node's child array contains alphabet to be replaced
+					char replacementChar = 'a' + x;										//Assign alphabet to be replaced
+					autocorrect = prefix + replacementChar + postfix;					//Reconstruct word with replacement character
 
 																						//Check if modified string exist in dictionary
 					if (dictionary.search(autocorrect)) {

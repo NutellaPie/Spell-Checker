@@ -1,3 +1,7 @@
+//Ng Wei Han, Ryan & Tay Rui-Jie
+//S10163108C & S10178023E
+//DSA Assignment - Spell Checker
+
 #include "pch.h"
 #include <iostream>
 #include <fstream>

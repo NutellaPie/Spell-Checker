@@ -21,7 +21,8 @@ void AddNewWord();
 void SaveDictionary();
 void DisplayAllWordsPrefix();
 //void RemoveWord();
-string SpellCheck(Trie dictionary, string keyword);
+//string SpellCheck(Trie dictionary, string keyword);
+int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* errors);
 bool isAlpha(string target);
 bool isInt(string target);
 
@@ -39,7 +40,7 @@ int main()
 			option = stoi(temp);	//convert user input to integer
 			switch (option) {
 			case 1:
-				SpellCheckWord();
+				//SpellCheckWord();
 				break;
 			case 2:
 				SpellCheckFile();
@@ -116,35 +117,36 @@ void readDictionary() {
 
 //-------------------------Fuctions for options----------------------------
 //Spell check a file - Option 1
-void SpellCheckWord() {
-	string searchstring;
-
-	cout << "Enter a keyword to search: ";
-	getline(cin, searchstring);
-
-	if (isAlpha(searchstring)) {
-		if (dictionary.search(searchstring))
-			cout << searchstring << " is present in the dictionary." << endl;
-
-		else {
-			cout << endl << "Word not found in the dictionary" << endl << string(70, '-') << endl;
-			cout << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
-			cout << string(70, '-') << endl;
-			cout << searchstring << string(dictionary.getHeight() - searchstring.length(), ' ') << "  |  " << SpellCheck(dictionary, searchstring) << endl;
-			cout << string(70, '-') << endl;
-		}
-	}
-	else {
-		cout << "Invalid character(s). Please try again (Only alphabets without spaces are accepted)" << endl;
-	}
-
-}
+//void SpellCheckWord() {
+//	string searchstring;
+//
+//	cout << "Enter a keyword to search: ";
+//	getline(cin, searchstring);
+//
+//	if (isAlpha(searchstring)) {
+//		if (dictionary.search(searchstring))
+//			cout << searchstring << " is present in the dictionary." << endl;
+//
+//		else {
+//			cout << endl << "Word not found in the dictionary" << endl << string(70, '-') << endl;
+//			cout << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
+//			cout << string(70, '-') << endl;
+//			cout << searchstring << string(dictionary.getHeight() - searchstring.length(), ' ') << "  |  " << SpellCheck(dictionary, searchstring) << endl;
+//			cout << string(70, '-') << endl;
+//		}
+//	}
+//	else {
+//		cout << "Invalid character(s). Please try again (Only alphabets without spaces are accepted)" << endl;
+//	}
+//
+//}
 
 //Spell check a file - Option 2
 void SpellCheckFile() {
 	ifstream readTextFile;
 	string input;
 	int count = 0;
+	int n;
 	bool flag = false;
 
 	cout << "Specify file to check against dictionary: ";
@@ -157,6 +159,9 @@ void SpellCheckFile() {
 	}
 	else {
 		while (readTextFile.good()) {
+			//Arrays for storing autocorrected words and error types
+			string correctedWords[10];
+			string errors[10];
 
 			readTextFile >> input;
 
@@ -168,13 +173,22 @@ void SpellCheckFile() {
 					flag = true;
 				}
 
+				n = SpellCheck(dictionary, input, correctedWords, errors);
 
-				//cout << "|" <<count + 1 << ".\t|\t\"" << input << "\t\"\t" << SpellCheck(dictionary, input) << endl;
+				//Display first error (if any)
+				cout << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  ";
+				cout << correctedWords[0] << string(dictionary.getHeight() - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
 
-				//cout << count+1 << ". |" << string(15 - input.length(), ' ') << input << string(30 - input.length(), ' ') << "| " << SpellCheck(dictionary, input) << endl;
-				cout << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  " << SpellCheck(dictionary, input) << endl;
+				//Display additional errors (if any)
+				for (int i = 1; i < n; i++) {
+					cout << string(4, ' ') << "  |  " << string(dictionary.getHeight(), ' ') << "  |  ";
+					cout << correctedWords[i] << string(dictionary.getHeight() - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
+				}
 				count++;
 			}
+		}
+		if (flag) {
+			cout << string(79, '-') << endl;
 		}
 
 		if (count == 0)
@@ -246,40 +260,59 @@ void DisplayAllWordsPrefix() {
 //}
 
 //-------------------------------Additional Functions-----------------------
-string SpellCheck(Trie dictionary, string keyword) {
-	string autocorrect;
-	bool foundsimilar = false;
+int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* errors) {
+	string autocorrect = keyword;
+	int count = 0;
 
-	autocorrect = keyword;
+	//---------------------------------- Insertion error check -------------------------
 
-	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+	for (int i = 0; i < autocorrect.length(); i++) { 
 		autocorrect.erase(i, 1);
-		if (dictionary.search(autocorrect)) {
-			foundsimilar = true;
-			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Insertion      |";
-		}
+		if (dictionary.search(autocorrect)) {		//check if modified string exist in dictionary
+			//check if corrected word is already accounted for
+			bool flag = false;
+			for (int i = count - 1; i >= 0; i--) {
+				flag = (autocorrect == correctedWords[i]);
+			}
 
-		else
-			autocorrect = keyword; //reset autocorrect to delete second char
+			//Add corrected word to list only if unaccounted for
+			if (!flag) {
+				correctedWords[count] = autocorrect;
+				errors[count] = "Insertion";
+				count++;
+			}
+		}
+		autocorrect = keyword; //reset autocorrect 
 	}
 
-	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+	//---------------------------------- Transposition error check -------------------------
 
+	for (int i = 0; i < autocorrect.length() - 1; i++) { 
+
+		//Swap adjacent letters 
 		string prefix = autocorrect.substr(0, i);
 		string postfix = autocorrect.substr(i + 2);
 		autocorrect = prefix + autocorrect[i + 1] + autocorrect[i] + postfix;
 
-		if (dictionary.search(autocorrect)) {
-			foundsimilar = true;
-			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Transposition  |";
+		if (dictionary.search(autocorrect)) {		//check if modified string exist in dictionary
+			bool flag = false;
+			for (int i = count - 1; i >= 0; i--) {
+				flag = (autocorrect == correctedWords[i]);
+			}
+			if (!flag) {
+				correctedWords[count] = autocorrect;
+				errors[count] = "Transposition";
+				count++;
+			}
 		}
-
-		else
-			autocorrect = keyword; //reset autocorrect to delete second word
+		autocorrect = keyword; //reset autocorrect
 	}
 
-	if (!foundsimilar)
-		return "-" + string(dictionary.getHeight() - 1, ' ') + "  |  -              |";
+	if (count == 0) { //If there are no replacements found
+		correctedWords[count] = "-";
+		errors[count] = "-";
+	}
+	return count;
 }
 
 bool isAlpha(string target) {

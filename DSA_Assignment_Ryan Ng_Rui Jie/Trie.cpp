@@ -170,6 +170,11 @@ bool Trie::isEmpty(TrieNode* root) {
 //Returns a pointer to a specified TrieNode within the trie (Return's NULL if target does not exist)
 //Parses a string to traverse through
 TrieNode* Trie::getNode(string target) {
+	//Return root if target is empty string
+	if (target == "") {
+		return root;
+	}
+	
 	TrieNode* temp = root;											//Temporary pointer used to traverse the trie
 
 	//Iterate through every character in the target string

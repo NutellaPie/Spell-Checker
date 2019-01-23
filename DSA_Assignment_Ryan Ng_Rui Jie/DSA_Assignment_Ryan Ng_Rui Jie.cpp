@@ -372,6 +372,41 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 		autocorrect = keyword; //reset autocorrect for next error check
 	}
 
+	//---------------------------------- Deletion error check -------------------------
+	for (int i = 0; i < autocorrect.length(); i++) {
+
+		//Inserting character to string
+		string prefix = autocorrect.substr(0, i);										//Set prefix to characters before index to insert character
+		string postfix = autocorrect.substr(i);											//Set postfix to characters after index to insert character
+		
+		//Iterate through all possible alphabets (Only insert alphabets that are children of prefix)
+		for (int x = 0; x < numberOfChar; x++) {
+			if (dictionary.getNode(prefix) != NULL) {									//Check if there is a branch to prefix in dictionary
+				if (dictionary.getNode(prefix)->children[x] != NULL) {					//Check if prefix node's child array contains alphabet to be inserted
+					char extraCharacter = 'a' + x;										//Assign alphabet to be inserted
+					autocorrect = prefix + extraCharacter + postfix;					//Insert alphabet into string to be evaluated
+
+					//Check if modified string exist in dictionary
+					if (dictionary.search(autocorrect)) {
+						//Check if corrected word has already been accounted for
+						bool flag = false;
+						for (int i = count - 1; i >= 0; i--) {
+							flag = (autocorrect == correctedWords[i]);
+						}
+
+						//Add corrected word to list only if unaccounted for
+						if (!flag) {
+							correctedWords[count] = autocorrect;
+							errors[count] = "Deletion";
+							count++;
+						}
+					}
+					autocorrect = keyword; //reset autocorrect for next error check
+				}
+			}
+		}
+	}
+
 	//If there are no replacements found
 	if (count == 0) {
 		correctedWords[count] = "-";

@@ -452,3 +452,40 @@ bool isInt(string target) {
 	}
 	return true;
 }
+
+/////////////////////////////////////BACKUP///////////////////////////////////
+//string SpellCheck(Trie dictionary, string keyword) {
+//	string autocorrect;
+//	bool foundsimilar = false;
+//
+//	autocorrect = keyword;
+//
+//	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
+//		autocorrect.erase(i, 1);
+//		if (dictionary.search(autocorrect)) {
+//			foundsimilar = true;
+//			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Insertion      |";
+//		}
+//
+//		else
+//			autocorrect = keyword; //reset autocorrect to delete second char
+//	}
+//
+//	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
+//
+//		string prefix = autocorrect.substr(0, i);
+//		string postfix = autocorrect.substr(i + 2);
+//		autocorrect = prefix + autocorrect[i + 1] + autocorrect[i] + postfix;
+//
+//		if (dictionary.search(autocorrect)) {
+//			foundsimilar = true;
+//			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Transposition  |";
+//		}
+//
+//		else
+//			autocorrect = keyword; //reset autocorrect to delete second word
+//	}
+//
+//	if (!foundsimilar)
+//		return "-" + string(dictionary.getHeight() - 1, ' ') + "  |  -              |";
+//}

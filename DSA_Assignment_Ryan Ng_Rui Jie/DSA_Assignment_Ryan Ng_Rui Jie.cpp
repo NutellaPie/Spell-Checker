@@ -64,7 +64,7 @@ int main()
 				break;
 			}
 		}
-		else {		//if input was not an int
+		else {		//if input was not an integer
 			cout << "Invalid input, please try again" << endl;
 		}
 	}
@@ -85,7 +85,6 @@ void Menu() {
 
 	getline(cin, temp);
 
-	//cin >> option;
 	cout << endl;
 }
 
@@ -96,7 +95,6 @@ void readDictionary() {
 	while (true) {
 		cout << "Input dictionary file to be read: ";
 		getline(cin, filename);
-		//cin >> filename;
 
 		filename = "../Resource Files/Dictionary Files/" + filename;
 		readDictionary.open(filename, ios::in);
@@ -123,7 +121,6 @@ void SpellCheckWord() {
 
 	cout << "Enter a keyword to search: ";
 	getline(cin, searchstring);
-	//cin >> searchstring;
 
 	if (dictionary.search(searchstring))
 		cout << searchstring << " is present in the dictionary." << endl;
@@ -142,7 +139,6 @@ void SpellCheckFile() {
 
 	cout << "Specify file to check against dictionary: ";
 	getline(cin, filename);
-	//cin >> filename;
 	filename = "../Resource Files/Text Files/" + filename;
 	readTextFile.open(filename, ios::in); //Open file for reading
 
@@ -172,7 +168,6 @@ void AddNewWord() {
 	//Prompt user for new word to input
 	cout << "Enter the new word: ";
 	getline(cin, temp);
-	//cin >> temp;
 
 	if (isAlpha(temp)) {
 		if (dictionary.search(temp)) {
@@ -194,7 +189,6 @@ void AddNewWord() {
 void SaveDictionary() {
 	cout << "Specify file to save dictionary to: ";
 	getline(cin, filename);
-	//cin >> filename;
 	filename = "../Resource Files/Text Files/" + filename;
 
 	destinationfile.open(filename, ios::out);
@@ -206,7 +200,6 @@ void SaveDictionary() {
 void DisplayAllWordsPrefix() {
 	cout << "Enter prefix: ";
 	getline(cin, temp);
-	//cin >> temp;
 
 	if (isAlpha(temp)) {
 		dictionary.printAllWords(dictionary.getNode(temp), temp);
@@ -222,7 +215,6 @@ void DisplayAllWordsPrefix() {
 //
 //	cout << "Enter a keyword to remove: ";
 //	getline(cin, temp);
-//	cin >> temp;
 //
 //	if (dictionary.search(temp)) {
 //		dictionary.remove(temp);

@@ -411,6 +411,7 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 
 	//---------------------------------- Substitution error check -------------------------
 
+	//Iterate through every alphabet in the keyword
 	for (int i = 0; i < autocorrect.length(); i++) {
 		string prefix = autocorrect.substr(0, i);									//Set prefix to characters before index to replace character
 		string postfix = autocorrect.substr(i + 1);									//Set postfix to characters after index to replace character

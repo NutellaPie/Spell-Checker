@@ -23,7 +23,6 @@ void DisplayAllWordsPrefix();
 //void RemoveWord();
 string SpellCheck(Trie dictionary, string keyword);
 bool isAlpha(string target);
-//void option6(); // Optional delete function
 
 Trie dictionary;
 

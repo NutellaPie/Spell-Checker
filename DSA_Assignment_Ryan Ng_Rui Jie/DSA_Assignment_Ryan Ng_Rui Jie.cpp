@@ -122,15 +122,20 @@ void SpellCheckWord() {
 	cout << "Enter a keyword to search: ";
 	getline(cin, searchstring);
 
-	if (dictionary.search(searchstring))
-		cout << searchstring << " is present in the dictionary." << endl;
+	if (isAlpha(searchstring)) {
+		if (dictionary.search(searchstring))
+			cout << searchstring << " is present in the dictionary." << endl;
 
+		else {
+			cout << endl << "Word not found in the dictionary" << endl << string(70, '-') << endl;
+			cout << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
+			cout << string(70, '-') << endl;
+			cout << searchstring << string(dictionary.getHeight() - searchstring.length(), ' ') << "  |  " << SpellCheck(dictionary, searchstring) << endl;
+			cout << string(70, '-') << endl;
+		}
+	}
 	else {
-		cout << endl << "Word not found in the dictionary" << endl << string(70, '-') << endl;
-		cout << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
-		cout << string(70, '-') << endl;
-		cout << searchstring << string(dictionary.getHeight() - searchstring.length(), ' ') << "  |  " << SpellCheck(dictionary, searchstring) << endl;
-		cout << string(70, '-') << endl;
+		cout << "Invalid character(s). Please try again (Only alphabets without spaces are accepted)" << endl;
 	}
 
 }
@@ -147,30 +152,34 @@ void SpellCheckFile() {
 	filename = "../Resource Files/Text Files/" + filename;
 	readTextFile.open(filename, ios::in); //Open file for reading
 
-	while (readTextFile.good()) {
-
-		readTextFile >> input;
-
-		if (!dictionary.search(input)) {
-			if (!flag) {
-				cout << endl << "Word(s) that are not found in the dictionary" << endl << string(79, '-') << endl;
-				cout << " No." << "  |  " << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
-				cout << string(79, '-') << endl;
-				flag = true;
-			}
-
-
-			//cout << "|" <<count + 1 << ".\t|\t\"" << input << "\t\"\t" << SpellCheck(dictionary, input) << endl;
-
-			//cout << count+1 << ". |" << string(15 - input.length(), ' ') << input << string(30 - input.length(), ' ') << "| " << SpellCheck(dictionary, input) << endl;
-			cout << string(4 - to_string(count + 1).length(), ' ') << count+1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  " << SpellCheck(dictionary, input) << endl;
-			count++;
-		}
+	if (!readTextFile) {
+		cout << "File not found. Please try again" << endl;
 	}
+	else {
+		while (readTextFile.good()) {
 
-	if (count == 0)
-		cout << "All words in this text file are found in the dictionary." << endl;
+			readTextFile >> input;
 
+			if (!dictionary.search(input)) {
+				if (!flag) {
+					cout << endl << "Word(s) that are not found in the dictionary" << endl << string(79, '-') << endl;
+					cout << " No." << "  |  " << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
+					cout << string(79, '-') << endl;
+					flag = true;
+				}
+
+
+				//cout << "|" <<count + 1 << ".\t|\t\"" << input << "\t\"\t" << SpellCheck(dictionary, input) << endl;
+
+				//cout << count+1 << ". |" << string(15 - input.length(), ' ') << input << string(30 - input.length(), ' ') << "| " << SpellCheck(dictionary, input) << endl;
+				cout << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  " << SpellCheck(dictionary, input) << endl;
+				count++;
+			}
+		}
+
+		if (count == 0)
+			cout << "All words in this text file are found in the dictionary." << endl;
+	}
 	readTextFile.close();
 }
 

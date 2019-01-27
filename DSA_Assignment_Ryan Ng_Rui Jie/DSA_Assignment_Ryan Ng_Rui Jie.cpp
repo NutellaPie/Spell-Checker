@@ -24,10 +24,13 @@ void SpellCheckFile();
 void AddNewWord();
 void SaveDictionary();
 void DisplayAllWordsPrefix();
-//void RemoveWord();
+void RemoveWord();
 int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* errors);
 bool isAlpha(string target);
 bool isInt(string target);
+
+#define max(x,y) ((x > y)? x : y)
+
 
 Trie dictionary;
 
@@ -57,9 +60,9 @@ int main()
 			case 5:
 				DisplayAllWordsPrefix();	//Option 5 - Display all words that start with certain letters
 				break;
-				//case 6:					
-				//	RemoveWord();			//Optional Feature - Remove word from dictionary
-				//	break;
+			case 6:
+				RemoveWord();			//Optional Feature - Remove word from dictionary
+				break;
 			case 0:							//End the program
 				cout << "Bye!" << endl;
 				return 0;
@@ -82,7 +85,7 @@ void Menu() {
 	cout << "[3] Add a new word to the dictionary" << endl;
 	cout << "[4] Save the dictionary (with new words added)" << endl;
 	cout << "[5] Display all words in the dictionary that starts with certain letters" << endl;
-	//cout << "[6] Remove a word from the dictionary" << endl;			//optional option
+	cout << "[6] Remove a word from the dictionary" << endl;			//optional option
 	cout << "[0] Exit " << endl;
 	cout << "--------------------------------------------------" << endl;
 	cout << "Enter your option : ";
@@ -101,7 +104,7 @@ void readDictionary() {
 		cout << "Input dictionary file to be read: ";
 		getline(cin, filename);
 
-		filename = "../Resource Files/Dictionary Files/" + filename;
+		filename = "../Resource Files/" + filename;
 		readDictionary.open(filename, ios::in);	//Open dictionary file for reading
 
 		if (!readDictionary) {	//If dictionary file does not exist
@@ -149,14 +152,14 @@ void SpellCheckWord() {
 			//Display autocorrected words (if any)
 			if (correctedWords[0] != "-") {
 				//Autocorrected word header
-				cout << "  |  Similar word(s)" << string(dictionary.getHeight() - 15, ' ') << "  |  Type of Error  |" << endl << "  " << string(46, '-') << endl;
+				cout << "  |  Similar word(s)" << string(max(dictionary.getHeight(), 15) - 15, ' ') << "  |  Type of Error  |" << endl << "  " << string(46, '-') << endl;
 
 				//Display first autocorrected word and error (if any)
-				cout << "  |  " << correctedWords[0] << string(dictionary.getHeight() - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
+				cout << "  |  " << correctedWords[0] << string(max(dictionary.getHeight(), 15) - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
 
 				//Display additional autocorrected words and errors (if any)
 				for (int i = 1; i < n; i++) {
-					cout << "  |  " << correctedWords[i] << string(dictionary.getHeight() - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
+					cout << "  |  " << correctedWords[i] << string(max(dictionary.getHeight(), 15) - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
 				}
 
 				//Display line to close table
@@ -185,7 +188,7 @@ void SpellCheckFile() {
 
 	cout << "Specify file to check against dictionary: ";
 	getline(cin, filename);
-	filename = "../Resource Files/Text Files/" + filename;
+	filename = "../Resource Files/" + filename;
 	readTextFile.open(filename, ios::in); //Open file for reading
 
 	//Check if user specified file exists
@@ -203,9 +206,9 @@ void SpellCheckFile() {
 			if (!dictionary.search(input)) {
 				//Determine if header autocorrected words need to be displayed
 				if (!flag) {
-					cout << endl << "Word(s) that are not found in the dictionary" << endl << "  " << string(79, '-') << endl;
-					cout << "  | No." << "  |  " << "Mistakes" << string(dictionary.getHeight() - 8, ' ') << "  |  " << "Similar word(s)" + string(dictionary.getHeight() - 15, ' ') + "  |  Type of Error  |" << endl;
-					cout << "  " << string(79, '-') << endl;
+					cout << endl << "Word(s) that are not found in the dictionary" << endl << "  " << string(80, '-') << endl;
+					cout << "  | No." << "  |  " << "Mistakes" << string(max(dictionary.getHeight(), 8) - 8, ' ') << "  |  " << "Similar word(s)" + string(max(dictionary.getHeight(), 15) - 15, ' ') + "  |  Type of Error  |" << endl;
+					cout << "  " << string(80, '-') << endl;
 					flag = true;
 				}
 
@@ -213,13 +216,13 @@ void SpellCheckFile() {
 				n = SpellCheck(dictionary, input, correctedWords, errors);
 
 				//Display first autocorrected word and error (if any)
-				cout << "  |" << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(dictionary.getHeight() - input.length(), ' ') << "  |  ";
-				cout << correctedWords[0] << string(dictionary.getHeight() - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
+				cout << "  |" << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(max(dictionary.getHeight(), 8) - input.length(), ' ') << "  |  ";
+				cout << correctedWords[0] << string(max(dictionary.getHeight(), 15) - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
 
 				//Display additional autocorrected words and errors (if any)
 				for (int i = 1; i < n; i++) {
-					cout << "  |" << string(4, ' ') << "  |  " << string(dictionary.getHeight(), ' ') << "  |  ";
-					cout << correctedWords[i] << string(dictionary.getHeight() - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
+					cout << "  |" << string(4, ' ') << "  |  " << string(max(dictionary.getHeight(), 8), ' ') << "  |  ";
+					cout << correctedWords[i] << string(max(dictionary.getHeight(), 15) - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
 				}
 				count++;
 			}
@@ -227,7 +230,7 @@ void SpellCheckFile() {
 
 		//Printing line to close table
 		if (flag) {
-			cout << "  " << string(79, '-') << endl;
+			cout << "  " << string(80, '-') << endl;
 		}
 
 		//Print if no errors are found in the user specified file
@@ -268,7 +271,7 @@ void SaveDictionary() {
 	//Prompt user for file to export to
 	cout << "Specify file to save dictionary to: ";
 	getline(cin, filename);
-	filename = "../Resource Files/Text Files/" + filename;
+	filename = "../Resource Files/" + filename;
 
 	destinationfile.open(filename, ios::out);		//Open file to write dictionary to
 	dictionary.printAllWords(&destinationfile);		//Print all words in dictionary to file
@@ -300,6 +303,7 @@ void RemoveWord() {
 	cout << "Enter word to be removed: ";
 	getline(cin, temp);
 
+	if (isAlpha(temp))
 	//Check if user input exists in dictionary
 	if (dictionary.search(temp)) {
 		dictionary.remove(temp);		//Remove word from dictionary
@@ -373,14 +377,14 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 	}
 
 	//------------------------------------ Deletion error check ----------------------------
-	
+
 	//Iterate through every alphabet in the keyword
 	for (int i = 0; i <= autocorrect.length(); i++) {
 
 		//Inserting character to string
 		string prefix = autocorrect.substr(0, i);										//Set prefix to characters before index to insert character
 		string postfix = autocorrect.substr(i);											//Set postfix to characters after index to insert character
-		
+
 		//Iterate through all possible alphabets (Only insert alphabets that are children of prefix)
 		for (int x = 0; x < numberOfChar; x++) {
 			if (dictionary.getNode(prefix) != NULL) {									//Check if there is a branch to prefix in dictionary
@@ -415,7 +419,7 @@ int SpellCheck(Trie dictionary, string keyword, string* correctedWords, string* 
 	for (int i = 0; i < autocorrect.length(); i++) {
 		string prefix = autocorrect.substr(0, i);									//Set prefix to characters before index to replace character
 		string postfix = autocorrect.substr(i + 1);									//Set postfix to characters after index to replace character
-		
+
 		for (int x = 0; x < numberOfChar; x++) {
 			if (dictionary.getNode(prefix) != NULL) {									//Check if there is a branch to prefix in dictionary
 				if (dictionary.getNode(prefix)->children[x] != NULL) {					//Check if prefix node's child array contains alphabet to be replaced
@@ -486,40 +490,3 @@ bool isInt(string target) {
 	}
 	return true;
 }
-
-/////////////////////////////////////BACKUP///////////////////////////////////
-//string SpellCheck(Trie dictionary, string keyword) {
-//	string autocorrect;
-//	bool foundsimilar = false;
-//
-//	autocorrect = keyword;
-//
-//	for (int i = 0; i < autocorrect.length(); i++) { //Insertion error (extra char added)
-//		autocorrect.erase(i, 1);
-//		if (dictionary.search(autocorrect)) {
-//			foundsimilar = true;
-//			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Insertion      |";
-//		}
-//
-//		else
-//			autocorrect = keyword; //reset autocorrect to delete second char
-//	}
-//
-//	for (int i = 0; i < autocorrect.length() - 1; i++) { //Transposition error (two adjancent char swapped)
-//
-//		string prefix = autocorrect.substr(0, i);
-//		string postfix = autocorrect.substr(i + 2);
-//		autocorrect = prefix + autocorrect[i + 1] + autocorrect[i] + postfix;
-//
-//		if (dictionary.search(autocorrect)) {
-//			foundsimilar = true;
-//			return autocorrect + string(dictionary.getHeight() - autocorrect.length(), ' ') + "  |  Transposition  |";
-//		}
-//
-//		else
-//			autocorrect = keyword; //reset autocorrect to delete second word
-//	}
-//
-//	if (!foundsimilar)
-//		return "-" + string(dictionary.getHeight() - 1, ' ') + "  |  -              |";
-//}

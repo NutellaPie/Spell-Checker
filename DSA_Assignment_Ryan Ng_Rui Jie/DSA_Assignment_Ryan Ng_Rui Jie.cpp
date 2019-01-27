@@ -147,12 +147,13 @@ void SpellCheckWord() {
 			n = SpellCheck(dictionary, searchstring, correctedWords, errors);
 
 			//Display header
-			cout << endl << "Word not found in the dictionary" << endl << "  " << string(46, '-') << endl;
+			cout << endl << "Word not found in the dictionary" << endl;
 
 			//Display autocorrected words (if any)
 			if (correctedWords[0] != "-") {
 				//Autocorrected word header
-				cout << "  |  Similar word(s)" << string(max(dictionary.getHeight(), 15) - 15, ' ') << "  |  Type of Error  |" << endl << "  " << string(46, '-') << endl;
+				cout << "  " << string(46, '-') << endl;
+				cout << "  |  Similar word(s)" << string(dictionary.getHeight() - 15, ' ') << "  |  Type of Error  |" << endl << "  " << string(46, '-') << endl;
 
 				//Display first autocorrected word and error (if any)
 				cout << "  |  " << correctedWords[0] << string(max(dictionary.getHeight(), 15) - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;

@@ -132,8 +132,8 @@ void readDictionary() {
 void SpellCheckWord() {
 	string searchstring;			//To store word to be checked against the dictionary
 	int n;							//For counting number of autocorrected words to suggest
-	string correctedWords[10];		//For storing autocorrected words
-	string errors[10];				//For storing error types
+	string correctedWords[50];		//For storing autocorrected words
+	string errors[50];				//For storing error types
 
 	cout << "Enter a keyword to search: ";
 	getline(cin, searchstring);
@@ -198,34 +198,36 @@ void SpellCheckFile() {
 	}
 	else {
 		while (readTextFile.good()) {
-			string correctedWords[10];		//For storing autocorrected words to suggest
-			string errors[10];				//For storing error types
+			string correctedWords[50];		//For storing autocorrected words to suggest
+			string errors[50];				//For storing error types
 
 			readTextFile >> input;
 
-			//If word does not exist in the dictionary
-			if (!dictionary.search(input)) {
-				//Determine if header autocorrected words need to be displayed
-				if (!flag) {
-					cout << endl << "Word(s) that are not found in the dictionary" << endl << "  " << string(80, '-') << endl;
-					cout << "  | No." << "  |  " << "Mistakes" << string(max(dictionary.getHeight(), 8) - 8, ' ') << "  |  " << "Similar word(s)" + string(max(dictionary.getHeight(), 15) - 15, ' ') + "  |  Type of Error  |" << endl;
-					cout << "  " << string(80, '-') << endl;
-					flag = true;
+			if (isAlpha(input)) {
+				//If word does not exist in the dictionary
+				if (!dictionary.search(input)) {
+					//Determine if header autocorrected words need to be displayed
+					if (!flag) {
+						cout << endl << "Word(s) that are not found in the dictionary" << endl << "  " << string(80, '-') << endl;
+						cout << "  | No." << "  |  " << "Mistakes" << string(max(dictionary.getHeight(), 8) - 8, ' ') << "  |  " << "Similar word(s)" + string(max(dictionary.getHeight(), 15) - 15, ' ') + "  |  Type of Error  |" << endl;
+						cout << "  " << string(80, '-') << endl;
+						flag = true;
+					}
+
+					//Return list of error types and possible autocorrected words
+					n = SpellCheck(dictionary, input, correctedWords, errors);
+
+					//Display first autocorrected word and error (if any)
+					cout << "  |" << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(max(dictionary.getHeight(), 8) - input.length(), ' ') << "  |  ";
+					cout << correctedWords[0] << string(max(dictionary.getHeight(), 15) - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
+
+					//Display additional autocorrected words and errors (if any)
+					for (int i = 1; i < n; i++) {
+						cout << "  |" << string(4, ' ') << "  |  " << string(max(dictionary.getHeight(), 8), ' ') << "  |  ";
+						cout << correctedWords[i] << string(max(dictionary.getHeight(), 15) - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
+					}
+					count++;
 				}
-
-				//Return list of error types and possible autocorrected words
-				n = SpellCheck(dictionary, input, correctedWords, errors);
-
-				//Display first autocorrected word and error (if any)
-				cout << "  |" << string(4 - to_string(count + 1).length(), ' ') << count + 1 << "  |  " << input << string(max(dictionary.getHeight(), 8) - input.length(), ' ') << "  |  ";
-				cout << correctedWords[0] << string(max(dictionary.getHeight(), 15) - correctedWords[0].length(), ' ') << "  |  " << errors[0] << string(13 - errors[0].length(), ' ') << "  |" << endl;
-
-				//Display additional autocorrected words and errors (if any)
-				for (int i = 1; i < n; i++) {
-					cout << "  |" << string(4, ' ') << "  |  " << string(max(dictionary.getHeight(), 8), ' ') << "  |  ";
-					cout << correctedWords[i] << string(max(dictionary.getHeight(), 15) - correctedWords[i].length(), ' ') << "  |  " << errors[i] << string(13 - errors[i].length(), ' ') << "  |" << endl;
-				}
-				count++;
 			}
 		}
 
@@ -305,14 +307,14 @@ void RemoveWord() {
 	getline(cin, temp);
 
 	if (isAlpha(temp))
-	//Check if user input exists in dictionary
-	if (dictionary.search(temp)) {
-		dictionary.remove(temp);		//Remove word from dictionary
-		cout << "\"" << temp << "\" successfully removed from the dictionary" << endl;
-	}
-	else {	//If user input does not exist in dictionary
-		cout << "\"" << temp << "\" does not exist in the dictionary" << endl;
-	}
+		//Check if user input exists in dictionary
+		if (dictionary.search(temp)) {
+			dictionary.remove(temp);		//Remove word from dictionary
+			cout << "\"" << temp << "\" successfully removed from the dictionary" << endl;
+		}
+		else {	//If user input does not exist in dictionary
+			cout << "\"" << temp << "\" does not exist in the dictionary" << endl;
+		}
 }
 
 //------------------------------------------------- Additional Functions ----------------------------------------------------------

@@ -1,7 +1,3 @@
-//Ng Wei Han, Ryan & Tay Rui-Jie
-//S10163108C & S10178023E
-//DSA Assignment - Spell Checker
-
 #pragma once
 #include <string>
 using namespace std;
